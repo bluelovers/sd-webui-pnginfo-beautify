@@ -1,0 +1,7 @@
+{
+  "extends": "@bluelovers/tsconfig/esm/mapfile.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "importHelpers": true
+  }
+}

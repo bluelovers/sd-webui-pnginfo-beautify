@@ -1,0 +1,63 @@
+{
+  "name": "sd-webui-pnginfo-beautify",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "create-by-yarn-tool"
+  ],
+  "license": "ISC",
+  "author": "bluelovers",
+  "sideEffects": false,
+  "main": "index.js",
+  "scripts": {
+    "install:frozenLockfile": "yarn-tool install --frozen-lockfile",
+    "install:resetLockfile": "yarn-tool install --reset-lockfile",
+    "build": "npx esbuild src/index.mts --bundle --outfile=javascript/sd-webui-pnginfo-beautify.js --platform=browser --tree-shaking=true --sourcemap --analyze",
+    "ci:install": "yarn install --frozen-lockfile && yarn add -W yarn-tool lerna@6 ynpx ts-node ts-jest jest typescript@next @bluelovers/jest-config tsx",
+    "ci:build": "yarn run build",
+    "npm:publish": "echo fake npm publish",
+    "npm:publish:bump": "yarn run version:bump && yarn run npm:publish",
+    "npm:publish:bump:major": "yarn run version:bump:major && yarn run npm:publish",
+    "npm:publish:bump:minor": "yarn run version:bump:minor && yarn run npm:publish",
+    "npm:publish:bump:patch": "yarn run version:bump:patch && yarn run npm:publish",
+    "npm:publish:bump:prerelease": "yarn run version:bump:prerelease && yarn run npm:publish",
+    "ws:fix-all": "yarn-tool fix-all  --overwriteHostedGitInfo",
+    "ws:fix-all:resetStaticFiles": "yarn run ws:fix-all -- --resetStaticFiles",
+    "preversion": "echo preversion && yarn run test",
+    "version": "echo version",
+    "version:bump": "yarn-tool version",
+    "version:bump:major": "yarn run version:bump -- --bump major",
+    "version:bump:minor": "yarn run version:bump -- --bump minor",
+    "version:bump:patch": "yarn run version:bump -- --bump patch",
+    "version:bump:prerelease": "yarn run version:bump -- --bump prerelease",
+    "postversion": "echo postversion",
+    "prepublish": "echo prepublish",
+    "prepare": "echo prepare",
+    "prepublishOnly": "yarn run preversion",
+    "publish": "echo publish",
+    "postpublish": "yarn run postpublish:changelog && yarn run postpublish:git:commit && yarn run postpublish:git:tag && yarn run postpublish:git:push",
+    "postpublish:changelog": "ynpx --quiet @yarn-tool/changelog && git add ./CHANGELOG.md",
+    "postpublish:git:commit": "git commit -m \"chore(release): publish\" . & echo postpublish:git:commit",
+    "postpublish:git:push": "git push --follow-tags",
+    "postpublish:git:tag": "ynpx --quiet @yarn-tool/tag",
+    "postpublishOnly": "echo postpublishOnly",
+    "ncu": "yarn-tool ncu -u",
+    "sort-package-json": "yarn-tool sort",
+    "tsc:default": "tsc -p tsconfig.json",
+    "tsc:esm": "tsc -p tsconfig.esm.json",
+    "tsc:showConfig": "ynpx get-current-tsconfig -p"
+  },
+  "dependencies": {
+    "@bluelovers/auto1111-pnginfo": "^2.0.3",
+    "@shikijs/core": "^1.5.2",
+    "tslib": ">=2"
+  },
+  "devDependencies": {
+    "@bluelovers/tsconfig": "^1.0.35",
+    "@types/node": "*",
+    "esbuild": "^0.21.3",
+    "shiki": "^1.5.2"
+  },
+  "peerDependencies": {},
+  "packageManager": "yarn@1.22.19"
+}
