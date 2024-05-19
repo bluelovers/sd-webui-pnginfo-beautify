@@ -24,6 +24,7 @@ onUiLoaded(async () =>
 		})
 		for (let mutation of mutationsList)
 		{
+			// @ts-ignore
 			console.debug(EXTENSION_NAME, 'observer:mutation', mutation.type, mutation.target?.id, mutation.target, mutation)
 			await renderInfo(mutation.target as HTMLDivElement, true)
 		}
