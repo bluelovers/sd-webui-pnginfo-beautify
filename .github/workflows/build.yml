@@ -85,7 +85,8 @@ jobs:
           message: "build: update build"
           branch: master
           dir: output
-          #force: true
+          history: true
+          force: true
       - name: Push changes
         if: success()
         uses: ad-m/github-push-action@master
