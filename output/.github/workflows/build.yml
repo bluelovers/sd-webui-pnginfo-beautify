@@ -85,6 +85,7 @@ jobs:
           message: "build: update build"
           branch: master
           dir: output
+          history: true
           force: true
       - name: Push changes
         if: success()
