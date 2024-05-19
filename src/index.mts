@@ -1,7 +1,7 @@
 /**
  * Created by user on 2024/5/17.
  */
-/// <reference types="../global.d.ts" preserve="true"/>
+/// <reference types="../global.webui.d.ts" preserve="true"/>
 
 import { renderInfo } from './render';
 import { initStyle } from './style';
