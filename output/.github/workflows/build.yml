@@ -41,6 +41,7 @@ jobs:
       - uses: actions/checkout@main
         with:
           fetch-depth: 2
+          ref: dev
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@main
         with:
@@ -81,9 +82,10 @@ jobs:
         if: success()
         uses: casperdcl/push-dir@v1
         with:
-          message: "build: static localizations"
+          message: "build: update build"
           branch: master
           dir: output
+          force: true
       - name: Push changes
         if: success()
         uses: ad-m/github-push-action@master
