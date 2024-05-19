@@ -76,6 +76,14 @@ jobs:
         if: success()
 #        env:
         run: yarn run ci:build
+      -
+        name: Push output
+        if: success()
+        uses: casperdcl/push-dir@v1
+        with:
+          message: "build: static localizations"
+          branch: master
+          dir: output
       - name: Push changes
         if: success()
         uses: ad-m/github-push-action@master

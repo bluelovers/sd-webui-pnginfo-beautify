@@ -12,9 +12,10 @@
   "scripts": {
     "install:frozenLockfile": "yarn-tool install --frozen-lockfile",
     "install:resetLockfile": "yarn-tool install --reset-lockfile",
-    "build": "npx esbuild src/index.mts --bundle --outfile=javascript/sd-webui-pnginfo-beautify.js --platform=browser --tree-shaking=true --sourcemap --analyze",
+    "build": "npx esbuild src/index.mts --bundle --outfile=output/javascript/sd-webui-pnginfo-beautify.js --platform=browser --tree-shaking=true --sourcemap --analyze",
     "ci:install": "yarn install --frozen-lockfile && yarn add -W yarn-tool lerna@6 ynpx ts-node ts-jest jest typescript@next @bluelovers/jest-config tsx",
-    "ci:build": "yarn run build",
+    "ci:build": "yarn run build && tsx ./test/scripts/output/copy.ts && yarn run ci:build:commit",
+    "ci:build:commit": "git commit ./output -m \"build: update javascript\" & echo ci:build:commit",
     "npm:publish": "echo fake npm publish",
     "npm:publish:bump": "yarn run version:bump && yarn run npm:publish",
     "npm:publish:bump:major": "yarn run version:bump:major && yarn run npm:publish",
@@ -50,11 +51,16 @@
   "dependencies": {
     "@bluelovers/auto1111-pnginfo": "^2.0.3",
     "@shikijs/core": "^1.5.2",
-    "tslib": ">=2"
+    "bluebird": "^3.7.2",
+    "fs-extra": "^11.2.0",
+    "tslib": ">=2",
+    "upath2": "^3.1.19"
   },
   "devDependencies": {
     "@bluelovers/tsconfig": "^1.0.35",
-    "@types/node": "*",
+    "@types/bluebird": "^3.5.42",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.12.12",
     "esbuild": "^0.21.3",
     "shiki": "^1.5.2"
   },

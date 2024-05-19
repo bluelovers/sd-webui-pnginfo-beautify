@@ -227,3 +227,5 @@ dist/*.umd.*.*s
 
 test/fixtures/.gitkeep
 !/javascript/*.map
+!/output/.github/
+!/output/javascript/*.map
