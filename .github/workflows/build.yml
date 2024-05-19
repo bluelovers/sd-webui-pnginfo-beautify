@@ -81,7 +81,7 @@ jobs:
         if: success()
         uses: casperdcl/push-dir@v1
         with:
-          message: "build: static localizations"
+          message: "build: update build"
           branch: master
           dir: output
       - name: Push changes
