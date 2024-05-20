@@ -12,4 +12,5 @@ export const tabs = [
 	['#html_info_extras.prose', true, {
 		isIncludePrompts: false,
 	}],
+	['#html_info_replacer.prose', true],
 ] satisfies (string | [string, boolean, opts?: IOptionsInfoparser])[];
