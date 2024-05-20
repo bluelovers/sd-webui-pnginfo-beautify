@@ -5697,7 +5697,8 @@
     }],
     ["#html_info_extras.prose", !0, {
       isIncludePrompts: !1
-    }]
+    }],
+    ["#html_info_replacer.prose", !0]
   ];
 
   // src/render.ts
