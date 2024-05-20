@@ -8,13 +8,20 @@ function addRow(key: string, value: any, full?: boolean)
 	return html;
 }
 
+function escapeHTML(html: string)
+{
+	return html.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+}
+
 export function renderLayout({
 	prompt,
 	negative_prompt,
 	config,
 })
 {
-	let html = `<div class="shiki_infotext_main">`;
+	let html = '';
+
+	html += `<div class="shiki_infotext_main">`;
 
 	if (prompt?.length) html += addRow('Positive Prompt', prompt, true);
 	if (negative_prompt?.length) html += addRow('Negative Prompt', negative_prompt, true);
@@ -23,7 +30,7 @@ export function renderLayout({
 	{
 		if (typeof value === 'string')
 		{
-			value = value.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+			value = escapeHTML(value);
 		}
 
 		html += addRow(key, value);

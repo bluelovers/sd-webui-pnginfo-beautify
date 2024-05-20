@@ -12,7 +12,6 @@ export default Bluebird.each(globSync([
 ], {
 	cwd: __ROOT,
 }), (file: string) => {
-	console.log(file)
 	return copy(join(__ROOT, file), join(__ROOT_OUTPUT, file), {
 		preserveTimestamps: true,
 		dereference: true,
