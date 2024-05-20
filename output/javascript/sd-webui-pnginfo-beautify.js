@@ -5673,14 +5673,17 @@
     let sx = full ? "_full" : "", html2 = '<div class="shiki_infotext_row">';
     return html2 += `<div class="shiki_infotext_label_div shiki_infotext_label${sx}">${key2}</div>`, html2 += `<div class="shiki_infotext_value_div shiki_infotext_value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
   }
+  function escapeHTML(html2) {
+    return html2.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  }
   function renderLayout({
     prompt: prompt2,
     negative_prompt,
     config
   }) {
-    let html2 = '<div class="shiki_infotext_main">';
-    return prompt2?.length && (html2 += addRow("Positive Prompt", prompt2, !0)), negative_prompt?.length && (html2 += addRow("Negative Prompt", negative_prompt, !0)), Object.entries(config).forEach(([key2, value]) => {
-      typeof value == "string" && (value = value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)), html2 += addRow(key2, value);
+    let html2 = "";
+    return html2 += '<div class="shiki_infotext_main">', prompt2?.length && (html2 += addRow("Positive Prompt", prompt2, !0)), negative_prompt?.length && (html2 += addRow("Negative Prompt", negative_prompt, !0)), Object.entries(config).forEach(([key2, value]) => {
+      typeof value == "string" && (value = escapeHTML(value)), html2 += addRow(key2, value);
     }), html2 += "</div>", html2;
   }
 
