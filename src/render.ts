@@ -1,7 +1,7 @@
 import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
 import { syntaxHighlighter } from './highlighter';
-import { renderLayout } from './layout';
-import { EXTENSION_NAME, tabs } from './const';
+import { renderLayout, switchBtn } from './layout';
+import { CLASS_PREFIX, EXTENSION_NAME, tabs } from './const';
 import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
 
 export async function renderInfo(
@@ -60,12 +60,22 @@ export async function renderInfo(
 		});
 	}
 
-	let target = parentId.querySelector(`.shiki_infotext_root`) as HTMLDivElement;
+	let target = parentId.querySelector(`.${CLASS_PREFIX}root`) as HTMLDivElement;
 
 	if (!target)
 	{
-		elem.insertAdjacentHTML('afterend', `<div class="prose gradio-html shiki_infotext_root">${html}</div>`);
-		target = parentId.querySelector(`.shiki_infotext_root`) as HTMLDivElement;
+		elem.insertAdjacentHTML('afterend', `<div class="prose gradio-html ${CLASS_PREFIX}root">${html}</div>`);
+		target = parentId.querySelector<HTMLDivElement>(`.${CLASS_PREFIX}root`);
+
+		let btn = switchBtn(elem);
+		target.parentNode.insertBefore(btn, target);
+
+		console.debug(EXTENSION_NAME, 'switchBtn', {
+			parentId,
+			elem,
+			target,
+			btn,
+		})
 	}
 	else
 	{

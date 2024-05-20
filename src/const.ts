@@ -2,6 +2,8 @@ import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
 
 export const EXTENSION_NAME = 'sd-webui-pnginfo-beautify';
 
+export const CLASS_PREFIX = 'shiki_infotext_';
+
 export const tabs = [
 	'#html_info_txt2img',
 	'#html_info_img2img',

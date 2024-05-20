@@ -3,6 +3,29 @@
 	max-height: 46.5em;
 	overflow-y: auto;
 	margin-bottom: 20px !important;
+
+	&, .infotext, #tab_pnginfo .html-log.prose, #html_info_x_extras.prose, #html_info_extras.prose, #html_info_replacer.prose
+	{
+		transition: .15s;
+	}
+}
+
+.shiki_infotext_show_hide_div
+{
+	text-align: right;
+	padding: 10px;
+
+	.shiki_infotext_show_hide_btn
+	{
+		border: var(--button-border-width) solid var(--button-secondary-border-color);
+		background: var(--button-secondary-background-fill);
+		color: var(--button-secondary-text-color);
+
+		position: sticky;
+		top: 0;
+		right: 0;
+	}
+
 }
 
 .shiki_infotext_main
@@ -70,16 +93,21 @@
 			border-radius: 8px;
 		}
 
-		.shiki_infotext_label_div, .shiki_infotext_value_div
-		{
-			padding: 3px 5px;
-			min-height: 24px;
-		}
-
 		.shiki_infotext_label_div
 		{
 			border-radius: 3px;
 			background: var(--button-secondary-background-fill);
+
+			&, .shiki_infotext_value_div
+			{
+				padding: 3px 5px;
+				min-height: 24px;
+			}
+
+			&[data-key="Model"], &[data-key="TI hashes"], &[data-key="Lora hashes"]
+			{
+				background: linear-gradient(to bottom right, #860087, #860087);
+			}
 		}
 	}
 }

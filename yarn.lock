@@ -132,10 +132,10 @@
   resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.21.3.tgz#899c03576c4c28c83228f0e64dfa10edae99c9a2"
   integrity sha512-xRxC0jaJWDLYvcUvjQmHCJSfMrgmUuvsoXgDeU/wTorQ1ngDdUBuFtgY3W1Pc5sprGAvZBtWdJX7RPg/iZZUqA==
 
-"@shikijs/core@1.5.2", "@shikijs/core@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.npmjs.org/@shikijs/core/-/core-1.5.2.tgz#e3917551ffadf6acbdae495c08065c3d3fd9e381"
-  integrity sha512-wSAOgaz48GmhILFElMCeQypSZmj6Ru6DttOOtl3KNkdJ17ApQuGNCfzpk4cClasVrnIu45++2DBwG4LNMQAfaA==
+"@shikijs/core@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.npmjs.org/@shikijs/core/-/core-1.6.0.tgz#ec8c199715859c7bbd2717c26526edc93e18d1c7"
+  integrity sha512-NIEAi5U5R7BLkbW1pG/ZKu3eb1lzc3/+jD0lFsuxMT7zjaf9bbNwdNyMr7zh/Zl8EXQtQ+MYBAt5G+JLu+5DlA==
 
 "@types/bluebird@^3.5.42":
   version "3.5.42"
@@ -392,12 +392,12 @@ sass@^1.71.1:
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
 
-shiki@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.npmjs.org/shiki/-/shiki-1.5.2.tgz#dfaad38dfdc2c0200986e372a63f0ac58be5b1e8"
-  integrity sha512-fpPbuSaatinmdGijE7VYUD3hxLozR3ZZ+iAx8Iy2X6REmJGyF5hQl94SgmiUNTospq346nXUVZx0035dyGvIVw==
+shiki@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.npmjs.org/shiki/-/shiki-1.6.0.tgz#f017ed09d467f99a28d5dfb572bcba6dfcadbcf3"
+  integrity sha512-P31ROeXcVgW/k3Z+vUUErcxoTah7ZRaimctOpzGuqAntqnnSmx1HOsvnbAB8Z2qfXPRhw61yptAzCsuKOhTHwQ==
   dependencies:
-    "@shikijs/core" "1.5.2"
+    "@shikijs/core" "1.6.0"
 
 "source-map-js@>=0.6.2 <2.0.0":
   version "1.2.0"
@@ -410,6 +410,11 @@ split-smartly2@^2.0.1:
   integrity sha512-Ntln8nau5M68ll+KYg4/oQ/uXxymzB7x1g8cXxyg49qRG28f9kchHvKsH4ssZ1ypKPGA1FvxXv9NK5MzUOGN8w==
   dependencies:
     ts-type "^3.0.1"
+
+stable-diffusion-webui-types@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/stable-diffusion-webui-types/-/stable-diffusion-webui-types-1.0.2.tgz#fe1a84ac0754efc963756a062120a1ddcd18f60b"
+  integrity sha512-XrvkC0fnhHR0vEv5YX+Elf5hNU4b9q34VC9dYanIg9jKpbuHXLctfKiVkEK8sviJO51X8lCoXAAAe51gBQQi9A==
 
 supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"

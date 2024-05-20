@@ -10,6 +10,8 @@ import _ from './test/scripts/output/copy';
 (async () => {
 	await _;
 
+	console.log(`build`, __ROOT_OUTPUT)
+
 	await build({
 		entryPoints: [
 			join(__ROOT, 'src/index.mts')

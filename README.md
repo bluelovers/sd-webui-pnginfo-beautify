@@ -2,6 +2,8 @@
 
     Stable Diffusion PNGINFO Beautify extension
 
+https://github.com/bluelovers/sd-webui-pnginfo-beautify
+
 ![img.png](docs/img.png)
 
 A custom extension for [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
