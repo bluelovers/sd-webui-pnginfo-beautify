@@ -16,8 +16,8 @@ export function renderLayout({
 {
 	let html = `<div class="shiki_infotext_main">`;
 
-	html += addRow('Positive Prompt', prompt, true);
-	html += addRow('Negative Prompt', negative_prompt, true);
+	if (prompt?.length) html += addRow('Positive Prompt', prompt, true);
+	if (negative_prompt?.length) html += addRow('Negative Prompt', negative_prompt, true);
 
 	Object.entries(config as Record<string, string>).forEach(([key, value]) =>
 	{

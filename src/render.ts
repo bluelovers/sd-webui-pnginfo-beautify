@@ -2,21 +2,26 @@ import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
 import { syntaxHighlighter } from './highlighter';
 import { renderLayout } from './layout';
 import { EXTENSION_NAME, tabs } from './const';
+import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
 
-export async function renderInfo(parentId: Extract<typeof tabs[number], string> | HTMLDivElement, isElem?: boolean)
+export async function renderInfo(
+	parentId: Extract<typeof tabs[number], string> | HTMLDivElement,
+	isElem?: boolean,
+	opts?: IOptionsInfoparser
+)
 {
 	const app = gradioApp();
 	let elem: HTMLDivElement;
 
-	if (isElem && typeof parentId !== 'string')
-	{
-		elem = parentId;
-		parentId = elem.parentNode as any;
-	}
-
 	if (typeof parentId === 'string')
 	{
-		parentId = app.querySelector(parentId) as HTMLDivElement;
+		parentId = app.querySelector<HTMLDivElement>(parentId);
+	}
+
+	if (isElem)
+	{
+		elem = parentId;
+		parentId = elem.parentNode as HTMLDivElement;
 	}
 
 	elem ??= parentId.querySelector(`.infotext`);
@@ -27,22 +32,26 @@ export async function renderInfo(parentId: Extract<typeof tabs[number], string> 
 
 	if (infotext?.length)
 	{
+		let options = {
+			...opts,
+			isIncludePrompts: opts?.isIncludePrompts ?? true,
+		};
+
 		let {
 			prompt,
 			negative_prompt,
 			...config
-		} = parseFromRawInfo(infotext, {
-			isIncludePrompts: true,
-		})
+		} = parseFromRawInfo(infotext, options)
 
 		console.debug(EXTENSION_NAME, 'parseFromRawInfo', {
 			prompt,
 			negative_prompt,
 			config,
+			options,
 		});
 
-		prompt = await syntaxHighlighter(prompt);
-		negative_prompt = await syntaxHighlighter(negative_prompt);
+		if (prompt?.length) prompt = await syntaxHighlighter(prompt);
+		if (negative_prompt?.length) negative_prompt = await syntaxHighlighter(negative_prompt);
 
 		html = renderLayout({
 			prompt,

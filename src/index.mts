@@ -6,6 +6,7 @@
 import { renderInfo } from './render';
 import { initStyle } from './style';
 import { EXTENSION_NAME, tabs } from './const';
+import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
 
 // @ts-ignore
 typeof onUiLoaded === 'undefined' && (onUiLoaded = (fn) => {
@@ -19,14 +20,18 @@ onUiLoaded(async () =>
 
 	let observer = new MutationObserver(async (mutationsList, observer) =>
 	{
-		console.debug(EXTENSION_NAME, 'observer', {
-			mutationsList,
-		})
 		for (let mutation of mutationsList)
 		{
-			// @ts-ignore
-			console.debug(EXTENSION_NAME, 'observer:mutation', mutation.type, mutation.target?.id, mutation.target, mutation)
-			await renderInfo(mutation.target as HTMLDivElement, true)
+			const elem = mutation.target as HTMLDivElement;
+			console.info(EXTENSION_NAME, 'observer:mutation', {
+				type: mutation.type,
+				id: elem?.id,
+				elem,
+				mutation,
+				_beautifyOpts: (elem as any)._beautifyOpts,
+			})
+			await renderInfo(mutation.target as HTMLDivElement, true, (elem as any)._beautifyOpts)
+				.catch(e => console.error(EXTENSION_NAME, e))
 		}
 	});
 
@@ -34,21 +39,36 @@ onUiLoaded(async () =>
 
 	for (let parentId of tabs)
 	{
-		let {
-			html,
-			...ret
-		} = await renderInfo(parentId)
-		//const elem = app.querySelector(`${parentId} .infotext`) as HTMLDivElement;
+		let isElem: boolean;
+		let opts: IOptionsInfoparser;
+		if (Array.isArray(parentId))
+		{
+			[parentId, isElem, opts] = parentId;
+		}
 
-		temp.push(ret);
+		await renderInfo(parentId, isElem, opts)
+			.then(({
+				html,
+				...ret
+			}) => {
+				temp.push({
+					...ret,
+					isElem,
+					opts,
+				});
 
-		observer.observe(ret.elem, {
-			//characterData: true,
-			childList: true,
-			//subtree: true,
-			//attributes: true,
-			//attributeFilter: ['title', 'placeholder'],
-		});
+				// @ts-ignore
+				ret.elem._beautifyOpts = opts;
+
+				observer.observe(ret.elem, {
+					//characterData: true,
+					childList: true,
+					//subtree: true,
+					//attributes: true,
+					//attributeFilter: ['title', 'placeholder'],
+				});
+			}).catch(e => console.error(EXTENSION_NAME, e))
+		;
 	}
 
 	console.info(EXTENSION_NAME, `onUiLoaded`, temp)

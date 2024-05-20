@@ -229,3 +229,5 @@ test/fixtures/.gitkeep
 !/javascript/*.map
 !/output/.github/
 !/output/javascript/*.map
+/src/style.css
+/src/style.css.map
