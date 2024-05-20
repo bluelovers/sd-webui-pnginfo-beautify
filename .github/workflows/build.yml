@@ -81,12 +81,14 @@ jobs:
         name: Push output
         if: success()
         uses: casperdcl/push-dir@v1
+        env:
+          ESBUILD_MINIFY: 1
         with:
           message: "build: update build"
           branch: master
           dir: output
           history: true
-          force: true
+          #force: true
       - name: Push changes
         if: success()
         uses: ad-m/github-push-action@master
