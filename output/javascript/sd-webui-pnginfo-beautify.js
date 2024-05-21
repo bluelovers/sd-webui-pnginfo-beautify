@@ -2375,6 +2375,12 @@
       return breakpointsInToken.length ? splitToken(token, breakpointsInToken) : token;
     })) : tokens;
   }
+  function resolveColorReplacements(theme, options) {
+    let replacements = typeof theme == "string" ? {} : { ...theme.colorReplacements }, themeName = typeof theme == "string" ? theme : theme.name;
+    for (let [key2, value] of Object.entries(options?.colorReplacements || {}))
+      typeof value == "string" ? replacements[key2] = value : key2 === themeName && Object.assign(replacements, value);
+    return replacements;
+  }
   function applyColorReplacements(color, replacements) {
     return color && (replacements?.[color?.toLowerCase()] || color);
   }
@@ -2606,10 +2612,7 @@
     };
   }
   function tokenizeAnsiWithTheme(theme, fileContents, options) {
-    let colorReplacements = {
-      ...theme.colorReplacements,
-      ...options?.colorReplacements
-    }, lines = splitLines(fileContents), colorPalette = createColorPalette(Object.fromEntries(namedColors.map((name) => [
+    let colorReplacements = resolveColorReplacements(theme, options), lines = splitLines(fileContents), colorPalette = createColorPalette(Object.fromEntries(namedColors.map((name) => [
       name,
       theme.colors?.[`terminal.ansi${name[0].toUpperCase()}${name.substring(1)}`]
     ]))), parser = createAnsiSequenceParser();
@@ -2648,10 +2651,7 @@
     return tokenizeWithTheme(code, _grammar, theme, colorMap, options);
   }
   function tokenizeWithTheme(code, grammar, theme, colorMap, options) {
-    let colorReplacements = {
-      ...theme.colorReplacements,
-      ...options?.colorReplacements
-    }, { tokenizeMaxLineLength = 0, tokenizeTimeLimit = 500 } = options, lines = splitLines(code), ruleStack = INITIAL, actual = [], final = [];
+    let colorReplacements = resolveColorReplacements(theme, options), { tokenizeMaxLineLength = 0, tokenizeTimeLimit = 500 } = options, lines = splitLines(code), ruleStack = INITIAL, actual = [], final = [];
     for (let i2 = 0, len = lines.length; i2 < len; i2++) {
       let [line, lineOffset] = lines[i2];
       if (line === "") {
@@ -2785,16 +2785,18 @@
   function codeToTokens(internal, code, options) {
     let bg, fg, tokens, themeName, rootStyle;
     if ("themes" in options) {
-      let { defaultColor = "light", cssVariablePrefix = "--shiki-", colorReplacements } = options, themes = Object.entries(options.themes).filter((i2) => i2[1]).map((i2) => ({ color: i2[0], theme: i2[1] })).sort((a, b) => a.color === defaultColor ? -1 : b.color === defaultColor ? 1 : 0);
+      let { defaultColor = "light", cssVariablePrefix = "--shiki-" } = options, themes = Object.entries(options.themes).filter((i2) => i2[1]).map((i2) => ({ color: i2[0], theme: i2[1] })).sort((a, b) => a.color === defaultColor ? -1 : b.color === defaultColor ? 1 : 0);
       if (themes.length === 0)
         throw new ShikiError("`themes` option must not be empty");
       let themeTokens = codeToTokensWithThemes(internal, code, options);
       if (defaultColor && !themes.find((t3) => t3.color === defaultColor))
         throw new ShikiError(`\`themes\` option must contain the defaultColor key \`${defaultColor}\``);
       let themeRegs = themes.map((t3) => internal.getTheme(t3.theme)), themesOrder = themes.map((t3) => t3.color);
-      tokens = themeTokens.map((line) => line.map((token) => mergeToken(token, themesOrder, cssVariablePrefix, defaultColor))), fg = themes.map((t3, idx) => (idx === 0 && defaultColor ? "" : `${cssVariablePrefix + t3.color}:`) + (applyColorReplacements(themeRegs[idx].fg, colorReplacements) || "inherit")).join(";"), bg = themes.map((t3, idx) => (idx === 0 && defaultColor ? "" : `${cssVariablePrefix + t3.color}-bg:`) + (applyColorReplacements(themeRegs[idx].bg, colorReplacements) || "inherit")).join(";"), themeName = `shiki-themes ${themeRegs.map((t3) => t3.name).join(" ")}`, rootStyle = defaultColor ? void 0 : [fg, bg].join(";");
+      tokens = themeTokens.map((line) => line.map((token) => mergeToken(token, themesOrder, cssVariablePrefix, defaultColor)));
+      let themeColorReplacements = themes.map((t3) => resolveColorReplacements(t3.theme, options));
+      fg = themes.map((t3, idx) => (idx === 0 && defaultColor ? "" : `${cssVariablePrefix + t3.color}:`) + (applyColorReplacements(themeRegs[idx].fg, themeColorReplacements[idx]) || "inherit")).join(";"), bg = themes.map((t3, idx) => (idx === 0 && defaultColor ? "" : `${cssVariablePrefix + t3.color}-bg:`) + (applyColorReplacements(themeRegs[idx].bg, themeColorReplacements[idx]) || "inherit")).join(";"), themeName = `shiki-themes ${themeRegs.map((t3) => t3.name).join(" ")}`, rootStyle = defaultColor ? void 0 : [fg, bg].join(";");
     } else if ("theme" in options) {
-      let { colorReplacements } = options;
+      let colorReplacements = resolveColorReplacements(options.theme, options.colorReplacements);
       tokens = codeToTokensBase(internal, code, options);
       let _theme = internal.getTheme(options.theme);
       bg = applyColorReplacements(_theme.bg, colorReplacements), fg = applyColorReplacements(_theme.fg, colorReplacements), themeName = _theme.name;
@@ -5668,27 +5670,8 @@
     });
   }
 
-  // src/layout.tsx
-  function addRow(key2, value, full) {
-    let sx = full ? "_full" : "", html2 = '<div class="shiki_infotext_row">';
-    return html2 += `<div class="shiki_infotext_label_div shiki_infotext_label${sx}">${key2}</div>`, html2 += `<div class="shiki_infotext_value_div shiki_infotext_value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
-  }
-  function escapeHTML(html2) {
-    return html2.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-  }
-  function renderLayout({
-    prompt: prompt2,
-    negative_prompt,
-    config
-  }) {
-    let html2 = "";
-    return html2 += '<div class="shiki_infotext_main">', prompt2?.length && (html2 += addRow("Positive Prompt", prompt2, !0)), negative_prompt?.length && (html2 += addRow("Negative Prompt", negative_prompt, !0)), Object.entries(config).forEach(([key2, value]) => {
-      typeof value == "string" && (value = escapeHTML(value)), html2 += addRow(key2, value);
-    }), html2 += "</div>", html2;
-  }
-
   // src/const.ts
-  var EXTENSION_NAME = "sd-webui-pnginfo-beautify", tabs = [
+  var EXTENSION_NAME = "sd-webui-pnginfo-beautify", CLASS_PREFIX = "shiki_infotext_", tabs = [
     "#html_info_txt2img",
     "#html_info_img2img",
     ["#tab_pnginfo .html-log.prose", !0],
@@ -5700,6 +5683,33 @@
     }],
     ["#html_info_replacer.prose", !0]
   ];
+
+  // src/layout.tsx
+  function addRow(key2, value, full) {
+    let sx = full ? "_full" : "", html2 = `<div class="${CLASS_PREFIX}row">`;
+    return html2 += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key2)}">${key2}</div>`, html2 += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
+  }
+  function escapeHTML(html2) {
+    return html2.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+  }
+  function switchBtn(elem) {
+    let btn = document.createElement("button");
+    btn.className = `${CLASS_PREFIX}show_hide_btn`, btn.classList.add("lg"), btn.classList.add("secondary"), btn.classList.add("gradio-button"), btn.classList.add("tool"), btn.innerText = "\u1368", btn.addEventListener("click", () => {
+      elem.style.display = elem.style.display === "none" ? "block" : "none";
+    });
+    let div = document.createElement("div");
+    return div.className = `${CLASS_PREFIX}show_hide_div`, div.classList.add("bilingual__trans_ignore_deep"), div.append(btn), div;
+  }
+  function renderLayout({
+    prompt: prompt2,
+    negative_prompt,
+    config
+  }) {
+    let html2 = "";
+    return html2 += `<div class="${CLASS_PREFIX}main">`, prompt2?.length && (html2 += addRow("Positive Prompt", prompt2, !0)), negative_prompt?.length && (html2 += addRow("Negative Prompt", negative_prompt, !0)), Object.entries(config).forEach(([key2, value]) => {
+      typeof value == "string" && (value = escapeHTML(value)), html2 += addRow(key2, value);
+    }), html2 += "</div>", html2;
+  }
 
   // src/render.ts
   async function renderInfo(parentId, isElem, opts) {
@@ -5726,8 +5736,20 @@
         config
       });
     }
-    let target = parentId.querySelector(".shiki_infotext_root");
-    return target ? target.innerHTML = html2 : (elem.insertAdjacentHTML("afterend", `<div class="prose gradio-html shiki_infotext_root">${html2}</div>`), target = parentId.querySelector(".shiki_infotext_root")), html2.length ? (elem.style.display = "none", target.style.display = "block") : (elem.style.display = "block", target.style.display = "none"), {
+    let target = parentId.querySelector(`.${CLASS_PREFIX}root`);
+    if (target)
+      target.innerHTML = html2;
+    else {
+      elem.insertAdjacentHTML("afterend", `<div class="prose gradio-html ${CLASS_PREFIX}root">${html2}</div>`), target = parentId.querySelector(`.${CLASS_PREFIX}root`);
+      let btn = switchBtn(elem);
+      target.parentNode.insertBefore(btn, target), console.debug(EXTENSION_NAME, "switchBtn", {
+        parentId,
+        elem,
+        target,
+        btn
+      });
+    }
+    return html2.length ? (elem.style.display = "none", target.style.display = "block") : (elem.style.display = "block", target.style.display = "none"), {
       parentId,
       elem,
       target,
@@ -5740,6 +5762,22 @@
   max-height: 46.5em;
   overflow-y: auto;
   margin-bottom: 20px !important;
+}
+.shiki_infotext_root, .shiki_infotext_root .infotext, .shiki_infotext_root #tab_pnginfo .html-log.prose, .shiki_infotext_root #html_info_x_extras.prose, .shiki_infotext_root #html_info_extras.prose, .shiki_infotext_root #html_info_replacer.prose {
+  transition: 0.15s;
+}
+
+.shiki_infotext_show_hide_div {
+  text-align: right;
+  padding: 10px;
+}
+.shiki_infotext_show_hide_div .shiki_infotext_show_hide_btn {
+  border: var(--button-border-width) solid var(--button-secondary-border-color);
+  background: var(--button-secondary-background-fill);
+  color: var(--button-secondary-text-color);
+  position: sticky;
+  top: 0;
+  right: 0;
 }
 
 .shiki_infotext_main {
@@ -5786,19 +5824,22 @@
   border: 1px solid var(--block-border-color);
   border-radius: 8px;
 }
-.shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div, .shiki_infotext_main .shiki_infotext_row .shiki_infotext_value_div {
-  padding: 3px 5px;
-  min-height: 24px;
-}
 .shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div {
   border-radius: 3px;
   background: var(--button-secondary-background-fill);
+}
+.shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div, .shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div .shiki_infotext_value_div {
+  padding: 3px 5px;
+  min-height: 24px;
+}
+.shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div[data-key=Model], .shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div[data-key="TI hashes"], .shiki_infotext_main .shiki_infotext_row .shiki_infotext_label_div[data-key="Lora hashes"] {
+  background: linear-gradient(to bottom right, #860087, #860087);
 }
 
 .infotext .pending:hover {
   opacity: 1;
 }
-/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvc2Qtd2VidWktcG5naW5mby1iZWF1dGlmeS9zZC13ZWJ1aS1wbmdpbmZvLWJlYXV0aWZ5L3NyYyIsInNvdXJjZXMiOlsic3R5bGUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVDO0VBQ0E7RUFDQTs7O0FBR0Q7RUFFQztFQUNBO0VBQ0E7O0FBRUE7RUFFQztFQUNBO0VBQ0E7O0FBRUE7RUFFQztFQUNBO0VBQ0E7O0FBR0Q7RUFFQztFQUNBOztBQUdEO0VBRUM7O0FBR0Q7RUFFQzs7QUFLQTtFQUVDOztBQUdEO0VBRUM7O0FBSUY7RUFFQztBQUNBO0VBQ0E7O0FBR0Q7RUFFQztFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBR0Q7RUFFQztFQUNBOztBQUdEO0VBRUM7RUFDQTs7O0FBS0g7RUFFQyIsInNvdXJjZXNDb250ZW50IjpbIi5zaGlraV9pbmZvdGV4dF9yb290XG57XG5cdG1heC1oZWlnaHQ6IDQ2LjVlbTtcblx0b3ZlcmZsb3cteTogYXV0bztcblx0bWFyZ2luLWJvdHRvbTogMjBweCAhaW1wb3J0YW50O1xufVxuXG4uc2hpa2lfaW5mb3RleHRfbWFpblxue1xuXHRkaXNwbGF5OiBmbGV4O1xuXHRmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuXHRwYWRkaW5nOiA1cHg7XG5cblx0LnNoaWtpX2luZm90ZXh0X3Jvd1xuXHR7XG5cdFx0ZGlzcGxheTogZmxleDtcblx0XHRmbGV4LXdyYXA6IHdyYXA7XG5cdFx0bWFyZ2luLWJvdHRvbTogNXB4O1xuXG5cdFx0Jjpob3ZlciAuc2hpa2lfaW5mb3RleHRfbGFiZWxfZGl2LCAuc2hpa2lfaW5mb3RleHRfbGFiZWxfZnVsbFxuXHRcdHtcblx0XHRcdGJhY2tncm91bmQ6IHZhcigtLWJ1dHRvbi1wcmltYXJ5LWJhY2tncm91bmQtZmlsbC1ob3Zlcik7XG5cdFx0XHRjb2xvcjogdmFyKC0tYnV0dG9uLXByaW1hcnktdGV4dC1jb2xvcik7XG5cdFx0XHRib3JkZXItY29sb3I6IHZhcigtLWJ1dHRvbi1wcmltYXJ5LWJvcmRlci1jb2xvcik7XG5cdFx0fVxuXG5cdFx0Jjpob3ZlciAuc2hpa2lfaW5mb3RleHRfdmFsdWVcblx0XHR7XG5cdFx0XHRib3gtc2hhZG93OiB2YXIoLS1pbnB1dC1zaGFkb3ctZm9jdXMpO1xuXHRcdFx0Ym9yZGVyLWNvbG9yOiB2YXIoLS1jb2xvci1hY2NlbnQpO1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF9sYWJlbCwgLnNoaWtpX2luZm90ZXh0X3ZhbHVlXG5cdFx0e1xuXHRcdFx0bWFyZ2luOiAwcHggMnB4O1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF9sYWJlbF9mdWxsLCAuc2hpa2lfaW5mb3RleHRfdmFsdWVfZnVsbFxuXHRcdHtcblx0XHRcdHdpZHRoOiAxMDAlO1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF92YWx1ZV9mdWxsXG5cdFx0e1xuXHRcdFx0PiBwcmVcblx0XHRcdHtcblx0XHRcdFx0cGFkZGluZzogMTBweCA1cHg7XG5cdFx0XHR9XG5cblx0XHRcdCYsIHByZSwgI3NoaWtpX2luZm90ZXh0X2hpZ2hsaWdodGVyXG5cdFx0XHR7XG5cdFx0XHRcdHdoaXRlLXNwYWNlOiBwcmUtd3JhcDtcblx0XHRcdH1cblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxcblx0XHR7XG5cdFx0XHRmbGV4OiAxIDAgYXV0bztcblx0XHRcdC8qd2hpdGUtc3BhY2U6IG5vd3JhcDsqL1xuXHRcdFx0bWluLXdpZHRoOiAzMDBweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfdmFsdWVcblx0XHR7XG5cdFx0XHRmbGV4OiA0IDEgYXV0bztcblx0XHRcdHdvcmQtd3JhcDogYnJlYWstd29yZDtcblx0XHRcdG1pbi13aWR0aDogMDtcblx0XHRcdG1hcmdpbjogYXV0byAycHg7XG5cdFx0XHRib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1ibG9jay1ib3JkZXItY29sb3IpO1xuXHRcdFx0Ym9yZGVyLXJhZGl1czogOHB4O1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF9sYWJlbF9kaXYsIC5zaGlraV9pbmZvdGV4dF92YWx1ZV9kaXZcblx0XHR7XG5cdFx0XHRwYWRkaW5nOiAzcHggNXB4O1xuXHRcdFx0bWluLWhlaWdodDogMjRweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxfZGl2XG5cdFx0e1xuXHRcdFx0Ym9yZGVyLXJhZGl1czogM3B4O1xuXHRcdFx0YmFja2dyb3VuZDogdmFyKC0tYnV0dG9uLXNlY29uZGFyeS1iYWNrZ3JvdW5kLWZpbGwpO1xuXHRcdH1cblx0fVxufVxuXG4uaW5mb3RleHQgLnBlbmRpbmc6aG92ZXJcbntcblx0b3BhY2l0eTogMTtcbn1cbiJdfQ== */`;
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvc2Qtd2VidWktcG5naW5mby1iZWF1dGlmeS9zZC13ZWJ1aS1wbmdpbmZvLWJlYXV0aWZ5L3NyYyIsInNvdXJjZXMiOlsic3R5bGUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVDO0VBQ0E7RUFDQTs7QUFFQTtFQUVDOzs7QUFJRjtFQUVDO0VBQ0E7O0FBRUE7RUFFQztFQUNBO0VBQ0E7RUFFQTtFQUNBO0VBQ0E7OztBQUtGO0VBRUM7RUFDQTtFQUNBOztBQUVBO0VBRUM7RUFDQTtFQUNBOztBQUVBO0VBRUM7RUFDQTtFQUNBOztBQUdEO0VBRUM7RUFDQTs7QUFHRDtFQUVDOztBQUdEO0VBRUM7O0FBS0E7RUFFQzs7QUFHRDtFQUVDOztBQUlGO0VBRUM7QUFDQTtFQUNBOztBQUdEO0VBRUM7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUdEO0VBRUM7RUFDQTs7QUFFQTtFQUVDO0VBQ0E7O0FBR0Q7RUFFQzs7O0FBTUo7RUFFQyIsInNvdXJjZXNDb250ZW50IjpbIi5zaGlraV9pbmZvdGV4dF9yb290XG57XG5cdG1heC1oZWlnaHQ6IDQ2LjVlbTtcblx0b3ZlcmZsb3cteTogYXV0bztcblx0bWFyZ2luLWJvdHRvbTogMjBweCAhaW1wb3J0YW50O1xuXG5cdCYsIC5pbmZvdGV4dCwgI3RhYl9wbmdpbmZvIC5odG1sLWxvZy5wcm9zZSwgI2h0bWxfaW5mb194X2V4dHJhcy5wcm9zZSwgI2h0bWxfaW5mb19leHRyYXMucHJvc2UsICNodG1sX2luZm9fcmVwbGFjZXIucHJvc2Vcblx0e1xuXHRcdHRyYW5zaXRpb246IC4xNXM7XG5cdH1cbn1cblxuLnNoaWtpX2luZm90ZXh0X3Nob3dfaGlkZV9kaXZcbntcblx0dGV4dC1hbGlnbjogcmlnaHQ7XG5cdHBhZGRpbmc6IDEwcHg7XG5cblx0LnNoaWtpX2luZm90ZXh0X3Nob3dfaGlkZV9idG5cblx0e1xuXHRcdGJvcmRlcjogdmFyKC0tYnV0dG9uLWJvcmRlci13aWR0aCkgc29saWQgdmFyKC0tYnV0dG9uLXNlY29uZGFyeS1ib3JkZXItY29sb3IpO1xuXHRcdGJhY2tncm91bmQ6IHZhcigtLWJ1dHRvbi1zZWNvbmRhcnktYmFja2dyb3VuZC1maWxsKTtcblx0XHRjb2xvcjogdmFyKC0tYnV0dG9uLXNlY29uZGFyeS10ZXh0LWNvbG9yKTtcblxuXHRcdHBvc2l0aW9uOiBzdGlja3k7XG5cdFx0dG9wOiAwO1xuXHRcdHJpZ2h0OiAwO1xuXHR9XG5cbn1cblxuLnNoaWtpX2luZm90ZXh0X21haW5cbntcblx0ZGlzcGxheTogZmxleDtcblx0ZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblx0cGFkZGluZzogNXB4O1xuXG5cdC5zaGlraV9pbmZvdGV4dF9yb3dcblx0e1xuXHRcdGRpc3BsYXk6IGZsZXg7XG5cdFx0ZmxleC13cmFwOiB3cmFwO1xuXHRcdG1hcmdpbi1ib3R0b206IDVweDtcblxuXHRcdCY6aG92ZXIgLnNoaWtpX2luZm90ZXh0X2xhYmVsX2RpdiwgLnNoaWtpX2luZm90ZXh0X2xhYmVsX2Z1bGxcblx0XHR7XG5cdFx0XHRiYWNrZ3JvdW5kOiB2YXIoLS1idXR0b24tcHJpbWFyeS1iYWNrZ3JvdW5kLWZpbGwtaG92ZXIpO1xuXHRcdFx0Y29sb3I6IHZhcigtLWJ1dHRvbi1wcmltYXJ5LXRleHQtY29sb3IpO1xuXHRcdFx0Ym9yZGVyLWNvbG9yOiB2YXIoLS1idXR0b24tcHJpbWFyeS1ib3JkZXItY29sb3IpO1xuXHRcdH1cblxuXHRcdCY6aG92ZXIgLnNoaWtpX2luZm90ZXh0X3ZhbHVlXG5cdFx0e1xuXHRcdFx0Ym94LXNoYWRvdzogdmFyKC0taW5wdXQtc2hhZG93LWZvY3VzKTtcblx0XHRcdGJvcmRlci1jb2xvcjogdmFyKC0tY29sb3ItYWNjZW50KTtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWwsIC5zaGlraV9pbmZvdGV4dF92YWx1ZVxuXHRcdHtcblx0XHRcdG1hcmdpbjogMHB4IDJweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxfZnVsbCwgLnNoaWtpX2luZm90ZXh0X3ZhbHVlX2Z1bGxcblx0XHR7XG5cdFx0XHR3aWR0aDogMTAwJTtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfdmFsdWVfZnVsbFxuXHRcdHtcblx0XHRcdD4gcHJlXG5cdFx0XHR7XG5cdFx0XHRcdHBhZGRpbmc6IDEwcHggNXB4O1xuXHRcdFx0fVxuXG5cdFx0XHQmLCBwcmUsICNzaGlraV9pbmZvdGV4dF9oaWdobGlnaHRlclxuXHRcdFx0e1xuXHRcdFx0XHR3aGl0ZS1zcGFjZTogcHJlLXdyYXA7XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0LnNoaWtpX2luZm90ZXh0X2xhYmVsXG5cdFx0e1xuXHRcdFx0ZmxleDogMSAwIGF1dG87XG5cdFx0XHQvKndoaXRlLXNwYWNlOiBub3dyYXA7Ki9cblx0XHRcdG1pbi13aWR0aDogMzAwcHg7XG5cdFx0fVxuXG5cdFx0LnNoaWtpX2luZm90ZXh0X3ZhbHVlXG5cdFx0e1xuXHRcdFx0ZmxleDogNCAxIGF1dG87XG5cdFx0XHR3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7XG5cdFx0XHRtaW4td2lkdGg6IDA7XG5cdFx0XHRtYXJnaW46IGF1dG8gMnB4O1xuXHRcdFx0Ym9yZGVyOiAxcHggc29saWQgdmFyKC0tYmxvY2stYm9yZGVyLWNvbG9yKTtcblx0XHRcdGJvcmRlci1yYWRpdXM6IDhweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxfZGl2XG5cdFx0e1xuXHRcdFx0Ym9yZGVyLXJhZGl1czogM3B4O1xuXHRcdFx0YmFja2dyb3VuZDogdmFyKC0tYnV0dG9uLXNlY29uZGFyeS1iYWNrZ3JvdW5kLWZpbGwpO1xuXG5cdFx0XHQmLCAuc2hpa2lfaW5mb3RleHRfdmFsdWVfZGl2XG5cdFx0XHR7XG5cdFx0XHRcdHBhZGRpbmc6IDNweCA1cHg7XG5cdFx0XHRcdG1pbi1oZWlnaHQ6IDI0cHg7XG5cdFx0XHR9XG5cblx0XHRcdCZbZGF0YS1rZXk9XCJNb2RlbFwiXSwgJltkYXRhLWtleT1cIlRJIGhhc2hlc1wiXSwgJltkYXRhLWtleT1cIkxvcmEgaGFzaGVzXCJdXG5cdFx0XHR7XG5cdFx0XHRcdGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCh0byBib3R0b20gcmlnaHQsICM4NjAwODcsICM4NjAwODcpO1xuXHRcdFx0fVxuXHRcdH1cblx0fVxufVxuXG4uaW5mb3RleHQgLnBlbmRpbmc6aG92ZXJcbntcblx0b3BhY2l0eTogMTtcbn1cbiJdfQ== */`;
 
   // src/style.ts
   function initStyle() {
