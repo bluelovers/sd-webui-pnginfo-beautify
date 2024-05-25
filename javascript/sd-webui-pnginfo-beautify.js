@@ -438,6 +438,66 @@
     return Object.fromEntries(t3.concat(handleInfoEntries(_parseInfoLine(e3), n2)));
   }
 
+  // src/const.ts
+  var EXTENSION_NAME = "sd-webui-pnginfo-beautify", CLASS_PREFIX = "shiki_infotext_", tabs = [
+    "#html_info_txt2img",
+    "#html_info_img2img",
+    ["#tab_pnginfo .html-log.prose", !0],
+    ["#html_info_x_extras.prose", !0, {
+      isIncludePrompts: !1
+    }],
+    ["#html_info_extras.prose", !0, {
+      isIncludePrompts: !1
+    }],
+    ["#html_info_replacer.prose", !0]
+  ];
+
+  // src/row-config.ts
+  var RowConfigMap = /* @__PURE__ */ new Map();
+  [
+    "Positive Prompt",
+    "Negative Prompt"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    full: !0,
+    syntaxHighlighter: !0
+  }));
+  [
+    "sv_prompt",
+    "Template"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    full: !0,
+    syntaxHighlighter: !0,
+    decode: !0
+  }));
+  [
+    "TI hashes",
+    "Lora hashes"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    decode: decodeHashs,
+    disableEscapeHTML: !0
+  }));
+  [
+    "Model hash",
+    "Model",
+    "VAE hash",
+    "VAE",
+    "ADetailer model"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    decode(key3, value) {
+      return `<span>${value}</span> ${_search(value)}`;
+    },
+    disableEscapeHTML: !0
+  }));
+  function _search(query, text2 = "&#x1F50E;") {
+    return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`.toString()}" target="_blank">${text2}</a>`;
+  }
+  function decodeHashs(key2, input) {
+    let map = parseFromRawInfo(JSON.parse(input)), list = [];
+    return Object.entries(map).forEach(([key3, value]) => {
+      list.push(`<div>${_search(key3, "&#x1F50D;")} <span>${key3}</span>: <span>${value}</span> ${_search(value)}</div>`);
+    }), list.join("");
+  }
+
   // node_modules/@shikijs/core/dist/types.mjs
   var FontStyle;
   (function(FontStyle2) {
@@ -5652,9 +5712,9 @@
       type
     };
   }
-  async function syntaxHighlighter(code) {
+  async function syntaxHighlighter(code, opts = {}) {
     return (await initHighlighter()).codeToHtml(code, {
-      lang: "prompt",
+      lang: opts.syntaxLang ?? "prompt",
       theme: "dark",
       mergeWhitespaces: !0,
       transformers: [
@@ -5670,23 +5730,14 @@
     });
   }
 
-  // src/const.ts
-  var EXTENSION_NAME = "sd-webui-pnginfo-beautify", CLASS_PREFIX = "shiki_infotext_", tabs = [
-    "#html_info_txt2img",
-    "#html_info_img2img",
-    ["#tab_pnginfo .html-log.prose", !0],
-    ["#html_info_x_extras.prose", !0, {
-      isIncludePrompts: !1
-    }],
-    ["#html_info_extras.prose", !0, {
-      isIncludePrompts: !1
-    }],
-    ["#html_info_replacer.prose", !0]
-  ];
-
   // src/layout.tsx
-  function addRow(key2, value, full) {
-    let sx = full ? "_full" : "", html2 = `<div class="${CLASS_PREFIX}row">`;
+  async function addRow(key2, value, infoData) {
+    let opts = RowConfigMap.get(key2) ?? {};
+    if (typeof value == "string" && value?.length) {
+      let doEscapeHTML = !opts.disableEscapeHTML;
+      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = opts.decode(key2, value)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), doEscapeHTML && (value = escapeHTML(value));
+    }
+    let sx = opts.full ? "_full" : "", html2 = `<div class="${CLASS_PREFIX}row">`;
     return html2 += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key2)}">${key2}</div>`, html2 += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
   }
   function escapeHTML(html2) {
@@ -5700,15 +5751,12 @@
     let div = document.createElement("div");
     return div.className = `${CLASS_PREFIX}show_hide_div`, div.classList.add("bilingual__trans_ignore_deep"), div.append(btn), div;
   }
-  function renderLayout({
-    prompt: prompt2,
-    negative_prompt,
-    config
-  }) {
+  async function renderLayout(infoData) {
     let html2 = "";
-    return html2 += `<div class="${CLASS_PREFIX}main">`, prompt2?.length && (html2 += addRow("Positive Prompt", prompt2, !0)), negative_prompt?.length && (html2 += addRow("Negative Prompt", negative_prompt, !0)), Object.entries(config).forEach(([key2, value]) => {
-      typeof value == "string" && (value = escapeHTML(value)), html2 += addRow(key2, value);
-    }), html2 += "</div>", html2;
+    html2 += `<div class="${CLASS_PREFIX}main">`, infoData.prompt?.length && (html2 += await addRow("Positive Prompt", infoData.prompt, infoData)), infoData.negative_prompt?.length && (html2 += await addRow("Negative Prompt", infoData.negative_prompt, infoData));
+    for (let [key2, value] of Object.entries(infoData.config))
+      html2 += await addRow(key2, value, infoData);
+    return html2 += "</div>", html2;
   }
 
   // src/render.ts
@@ -5730,7 +5778,7 @@
         negative_prompt,
         config,
         options
-      }), prompt2?.length && (prompt2 = await syntaxHighlighter(prompt2)), negative_prompt?.length && (negative_prompt = await syntaxHighlighter(negative_prompt)), html2 = renderLayout({
+      }), html2 = await renderLayout({
         prompt: prompt2,
         negative_prompt,
         config
