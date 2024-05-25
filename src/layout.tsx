@@ -1,8 +1,42 @@
 import { CLASS_PREFIX } from './const';
+import { RowConfigMap } from './row-config';
+import { syntaxHighlighter } from './highlighter';
+import { IRecordInfo } from '@bluelovers/auto1111-pnginfo';
 
-function addRow(key: string, value: any, full?: boolean)
+async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 {
-	let sx = full ? '_full' : '';
+	let opts = RowConfigMap.get(key) ?? {};
+
+	if (typeof value === 'string' && value?.length)
+	{
+		let doEscapeHTML = !opts.disableEscapeHTML;
+
+		if (opts.decode)
+		{
+			if (opts.decode === true)
+			{
+				value = JSON.parse(value)
+			}
+			else
+			{
+				value = opts.decode(key, value);
+			}
+		}
+
+		if (opts.syntaxHighlighter)
+		{
+			doEscapeHTML = false;
+
+			value = await syntaxHighlighter(value, opts);
+		}
+
+		if (doEscapeHTML)
+		{
+			value = escapeHTML(value);
+		}
+	}
+
+	let sx = opts.full ? '_full' : '';
 	let html = `<div class="${CLASS_PREFIX}row">`;
 	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}</div>`;
 	html += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`;
@@ -42,28 +76,26 @@ export function switchBtn(elem: HTMLDivElement)
 	return div
 }
 
-export function renderLayout({
-	prompt,
-	negative_prompt,
-	config,
-})
+interface ILayoutInfoData
+{
+	prompt: string;
+	negative_prompt: string;
+	config: Omit<IRecordInfo, 'prompt' | 'negative_prompt'>;
+}
+
+export async function renderLayout(infoData: ILayoutInfoData)
 {
 	let html = '';
 
 	html += `<div class="${CLASS_PREFIX}main">`;
 
-	if (prompt?.length) html += addRow('Positive Prompt', prompt, true);
-	if (negative_prompt?.length) html += addRow('Negative Prompt', negative_prompt, true);
+	if (infoData.prompt?.length) html += await addRow('Positive Prompt', infoData.prompt, infoData);
+	if (infoData.negative_prompt?.length) html += await addRow('Negative Prompt', infoData.negative_prompt, infoData);
 
-	Object.entries(config as Record<string, string>).forEach(([key, value]) =>
+	for (let [key, value] of Object.entries(infoData.config as Record<string, string>))
 	{
-		if (typeof value === 'string')
-		{
-			value = escapeHTML(value);
-		}
-
-		html += addRow(key, value);
-	})
+		html += await addRow(key, value, infoData);
+	}
 
 	html += `</div>`
 

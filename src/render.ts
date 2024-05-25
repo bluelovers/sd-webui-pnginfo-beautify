@@ -1,5 +1,4 @@
 import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
-import { syntaxHighlighter } from './highlighter';
 import { renderLayout, switchBtn } from './layout';
 import { CLASS_PREFIX, EXTENSION_NAME, tabs } from './const';
 import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
@@ -50,10 +49,10 @@ export async function renderInfo(
 			options,
 		});
 
-		if (prompt?.length) prompt = await syntaxHighlighter(prompt);
-		if (negative_prompt?.length) negative_prompt = await syntaxHighlighter(negative_prompt);
+		//if (prompt?.length) prompt = await syntaxHighlighter(prompt);
+		//if (negative_prompt?.length) negative_prompt = await syntaxHighlighter(negative_prompt);
 
-		html = renderLayout({
+		html = await renderLayout({
 			prompt,
 			negative_prompt,
 			config,

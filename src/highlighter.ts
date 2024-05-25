@@ -5,6 +5,7 @@ import { getHighlighterCore, HighlighterCore } from 'shiki/core';
 import { prompt } from './grammar';
 import getWasm from 'shiki/wasm';
 import { ThemeInput } from 'shiki';
+import { IRowConfigOptions } from './row-config';
 
 let cacheHighlighter: HighlighterCore;
 
@@ -102,11 +103,11 @@ function themeConfig(isDarkMode: boolean)
 	} satisfies ThemeInput;
 }
 
-export async function syntaxHighlighter(code: string)
+export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = {})
 {
 	const highlighter = await initHighlighter();
 	return highlighter.codeToHtml(code, {
-		lang: 'prompt',
+		lang: opts.syntaxLang ?? 'prompt',
 		theme: 'dark',
 		mergeWhitespaces: true,
 		transformers: [
