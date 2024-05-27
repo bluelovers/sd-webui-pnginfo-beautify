@@ -15,4 +15,6 @@ export const tabs = [
 		isIncludePrompts: false,
 	}],
 	['#html_info_replacer.prose', true],
+	['#fastpnginfo_geninfo_html', true],
+	//['#fastpnginfo_geninfo  > label > textarea', true],
 ] satisfies (string | [string, boolean, opts?: IOptionsInfoparser])[];

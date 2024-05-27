@@ -25,7 +25,19 @@ export async function renderInfo(
 
 	elem ??= parentId.querySelector(`.infotext`);
 
-	let infotext = elem.innerText?.replace(/^\s+|\s+$/g, '');
+	let infotext: string;
+
+	if (elem.matches(':input'))
+	{
+		// @ts-ignore
+		infotext = elem.value;
+	}
+	else
+	{
+		infotext = elem.innerText;
+	}
+
+	infotext = infotext?.replace(/^\s+|\s+$/g, '');
 
 	let html: string = '';
 

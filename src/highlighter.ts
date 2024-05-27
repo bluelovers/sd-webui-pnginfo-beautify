@@ -15,9 +15,14 @@ export async function initHighlighter(): Promise<HighlighterCore>
 
 	if (highlighter) return highlighter;
 
+	/**
+	 * @see https://shiki.matsu.io/guide/install#fine-grained-bundle
+	 */
 	highlighter = await getHighlighterCore({
-		// @ts-ignore
-		langs: [prompt],
+		langs: [
+			prompt,
+			() => import('shiki/langs/json5.mjs'),
+		],
 		themes: [themeConfig(true), themeConfig(false)],
 		loadWasm: getWasm,
 	});

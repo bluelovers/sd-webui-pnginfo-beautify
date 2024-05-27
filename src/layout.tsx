@@ -23,16 +23,16 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 			}
 		}
 
+		if (opts.formatFn)
+		{
+			value = await opts.formatFn(value, key);
+		}
+
 		if (opts.syntaxHighlighter)
 		{
 			doEscapeHTML = false;
 
 			value = await syntaxHighlighter(value, opts);
-		}
-
-		if (opts.formatFn)
-		{
-			value = await opts.formatFn(value, key);
 		}
 
 		if (doEscapeHTML)

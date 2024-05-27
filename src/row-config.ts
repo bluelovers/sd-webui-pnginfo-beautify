@@ -37,12 +37,20 @@ export const RowConfigMap = new Map<string, IRowConfigOptions>();
 
 [
 	'Template Generated Grid',
+	//'Dynamic Prompts',
 ].forEach(key => RowConfigMap.set(key, {
 	full: true,
 	decode: true,
-	formatFn(value)
+	syntaxHighlighter: true,
+	syntaxLang: 'json5',
+	formatFn(value, key)
 	{
-		return JSON.stringify(value, null, 2)
+		if (key === 'Template Generated Grid')
+		{
+			return JSON.stringify(value, null, 2)
+		}
+
+		return value
 	}
 }));
 
