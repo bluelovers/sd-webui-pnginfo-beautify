@@ -54,7 +54,13 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 - VAE
 - ADetailer model
 
-#### Others
+#### decode
+
+- Template Generated Grid
+
+![Template Generated Grid.png](docs/Template Generated Grid.png)
+
+### Others
 
 - Show/Hide Original pnginfo
 
