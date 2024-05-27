@@ -471,6 +471,15 @@
     decode: !0
   }));
   [
+    "Template Generated Grid"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    full: !0,
+    decode: !0,
+    formatFn(value) {
+      return JSON.stringify(value, null, 2);
+    }
+  }));
+  [
     "TI hashes",
     "Lora hashes"
   ].forEach((key2) => RowConfigMap.set(key2, {
@@ -484,18 +493,18 @@
     "VAE",
     "ADetailer model"
   ].forEach((key2) => RowConfigMap.set(key2, {
-    decode(key3, value) {
+    decode(value) {
       return `<span>${value}</span> ${_search(value)}`;
     },
     disableEscapeHTML: !0
   }));
   function _search(query, text2 = "&#x1F50E;") {
-    return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`.toString()}" target="_blank">${text2}</a>`;
+    return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
   }
-  function decodeHashs(key2, input) {
+  function decodeHashs(input) {
     let map = parseFromRawInfo(JSON.parse(input)), list = [];
-    return Object.entries(map).forEach(([key3, value]) => {
-      list.push(`<div>${_search(key3, "&#x1F50D;")} <span>${key3}</span>: <span>${value}</span> ${_search(value)}</div>`);
+    return Object.entries(map).forEach(([key2, value]) => {
+      list.push(`<div>${_search(key2, "&#x1F50D;")} <span>${key2}</span>: <span>${value}</span> ${_search(value)}</div>`);
     }), list.join("");
   }
 
@@ -5736,7 +5745,7 @@
     let opts = RowConfigMap.get(key2) ?? {};
     if (typeof value == "string" && value?.length) {
       let doEscapeHTML = !opts.disableEscapeHTML;
-      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = opts.decode(key2, value)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), doEscapeHTML && (value = escapeHTML(value));
+      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), opts.formatFn && (value = await opts.formatFn(value, key2)), doEscapeHTML && (value = escapeHTML(value));
     }
     let sx = opts.full ? "_full" : "", html2 = `<div class="${CLASS_PREFIX}row">`;
     return html2 += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key2)}">${key2}</div>`, html2 += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
