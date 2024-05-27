@@ -26,6 +26,7 @@ export const RowConfigMap = new Map<string, IRowConfigOptions>();
 [
 	'sv_prompt',
 	'Template',
+	'Template Generated',
 ].forEach(key => RowConfigMap.set(key, {
 	full: true,
 	syntaxHighlighter: true,
