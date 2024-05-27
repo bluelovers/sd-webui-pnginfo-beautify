@@ -463,7 +463,8 @@
   }));
   [
     "sv_prompt",
-    "Template"
+    "Template",
+    "Template Generated"
   ].forEach((key2) => RowConfigMap.set(key2, {
     full: !0,
     syntaxHighlighter: !0,
