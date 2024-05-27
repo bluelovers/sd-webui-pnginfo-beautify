@@ -103,6 +103,8 @@ jobs:
           SKIP_EMPTY_COMMITS: true
           MESSAGE: "build: update build"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_NAME: "GitHub Action"
+          COMMIT_EMAIL: "action@github.com"
       -
         name: Push changes
         if: success()
