@@ -1,6 +1,6 @@
 import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
 
-type IDecodeFn = (key: string, value: string) => string
+type IDecodeFn = (value: string, key: string) => string | PromiseLike<string>
 
 export interface IRowConfigOptions
 {
@@ -8,6 +8,8 @@ export interface IRowConfigOptions
 
 	syntaxHighlighter?: boolean,
 	syntaxLang?: string,
+
+	formatFn?: IDecodeFn,
 
 	decode?: boolean | IDecodeFn,
 	disableEscapeHTML?: boolean,
@@ -34,6 +36,17 @@ export const RowConfigMap = new Map<string, IRowConfigOptions>();
 }));
 
 [
+	'Template Generated Grid',
+].forEach(key => RowConfigMap.set(key, {
+	full: true,
+	decode: true,
+	formatFn(value)
+	{
+		return JSON.stringify(value, null, 2)
+	}
+}));
+
+[
 	'TI hashes',
 	'Lora hashes',
 ].forEach(key => RowConfigMap.set(key, {
@@ -48,7 +61,7 @@ export const RowConfigMap = new Map<string, IRowConfigOptions>();
 	'VAE',
 	'ADetailer model',
 ].forEach(key => RowConfigMap.set(key, {
-	decode(key, value)
+	decode(value)
 	{
 		return `<span>${value}</span> ${_search(value)}`
 	},
@@ -57,15 +70,15 @@ export const RowConfigMap = new Map<string, IRowConfigOptions>();
 
 function _search(query: unknown, text = '&#x1F50E;')
 {
-	let href = `https://civitai.com/search/models?sortBy=models_v9&query=${query}`;
-	return `<a href="${href.toString()}" target="_blank">${text}</a>`
+	const href = `https://civitai.com/search/models?sortBy=models_v9&query=${query}`;
+	return `<a href="${href}" target="_blank">${text}</a>`
 }
 
-function decodeHashs(key, input: string)
+function decodeHashs(input: string)
 {
 	let map = parseFromRawInfo(JSON.parse(input));
 
-	let list: string[] = [];
+	const list: string[] = [];
 
 	Object.entries(map)
 		.forEach(([key, value]) => {

@@ -19,7 +19,7 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 			}
 			else
 			{
-				value = opts.decode(key, value);
+				value = await opts.decode(value, key);
 			}
 		}
 
@@ -28,6 +28,11 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 			doEscapeHTML = false;
 
 			value = await syntaxHighlighter(value, opts);
+		}
+
+		if (opts.formatFn)
+		{
+			value = await opts.formatFn(value, key);
 		}
 
 		if (doEscapeHTML)
