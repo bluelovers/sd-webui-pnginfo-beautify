@@ -28,6 +28,7 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/const.t
 - PNG info
 - Extras
 - [Replacer](https://github.com/light-and-ray/sd-webui-replacer)
+- [Fast PNG Info](https://github.com/NoCrypt/sd-fast-pnginfo)
 
 ### Supported fields
 

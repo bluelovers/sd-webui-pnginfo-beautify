@@ -1,4 +1,43 @@
 (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __esm = (fn, res) => function() {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  };
+  var __export = (target, all2) => {
+    for (var name in all2)
+      __defProp(target, name, { get: all2[name], enumerable: !0 });
+  };
+
+  // node_modules/shiki/dist/langs/json5.mjs
+  var json5_exports = {};
+  __export(json5_exports, {
+    default: () => json5
+  });
+  var lang2, json5, init_json5 = __esm({
+    "node_modules/shiki/dist/langs/json5.mjs"() {
+      lang2 = Object.freeze({ displayName: "JSON5", fileTypes: ["json5"], name: "json5", patterns: [{ include: "#comments" }, { include: "#value" }], repository: { array: { begin: "\\[", beginCaptures: { 0: { name: "punctuation.definition.array.begin.json5" } }, end: "\\]", endCaptures: { 0: { name: "punctuation.definition.array.end.json5" } }, name: "meta.structure.array.json5", patterns: [{ include: "#comments" }, { include: "#value" }, { match: ",", name: "punctuation.separator.array.json5" }, { match: "[^\\s\\]]", name: "invalid.illegal.expected-array-separator.json5" }] }, comments: { patterns: [{ match: "/{2}.*", name: "comment.single.json5" }, { begin: "/\\*\\*(?!/)", captures: { 0: { name: "punctuation.definition.comment.json5" } }, end: "\\*/", name: "comment.block.documentation.json5" }, { begin: "/\\*", captures: { 0: { name: "punctuation.definition.comment.json5" } }, end: "\\*/", name: "comment.block.json5" }] }, constant: { match: "\\b(?:true|false|null|Infinity|NaN)\\b", name: "constant.language.json5" }, infinity: { match: "(-)*\\b(?:Infinity|NaN)\\b", name: "constant.language.json5" }, key: { name: "string.key.json5", patterns: [{ include: "#stringSingle" }, { include: "#stringDouble" }, { match: "[a-zA-Z0-9_-]", name: "string.key.json5" }] }, number: { patterns: [{ comment: "handles hexadecimal numbers", match: "(0x)[0-9a-fA-f]*", name: "constant.hex.numeric.json5" }, { comment: "handles integer and decimal numbers", match: "[+-.]?(?=[1-9]|0(?!\\d))\\d+(\\.\\d+)?([eE][+-]?\\d+)?", name: "constant.dec.numeric.json5" }] }, object: { begin: "\\{", beginCaptures: { 0: { name: "punctuation.definition.dictionary.begin.json5" } }, comment: "a json5 object", end: "\\}", endCaptures: { 0: { name: "punctuation.definition.dictionary.end.json5" } }, name: "meta.structure.dictionary.json5", patterns: [{ include: "#comments" }, { comment: "the json5 object key", include: "#key" }, { begin: ":", beginCaptures: { 0: { name: "punctuation.separator.dictionary.key-value.json5" } }, end: "(,)|(?=\\})", endCaptures: { 1: { name: "punctuation.separator.dictionary.pair.json5" } }, name: "meta.structure.dictionary.value.json5", patterns: [{ comment: "the json5 object value", include: "#value" }, { match: "[^\\s,]", name: "invalid.illegal.expected-dictionary-separator.json5" }] }, { match: "[^\\s\\}]", name: "invalid.illegal.expected-dictionary-separator.json5" }] }, stringDouble: { begin: '["]', beginCaptures: { 0: { name: "punctuation.definition.string.begin.json5" } }, end: '["]', endCaptures: { 0: { name: "punctuation.definition.string.end.json5" } }, name: "string.quoted.json5", patterns: [{ match: `(?x:
+\\\\
+(?:
+["\\\\/bfnrt]
+|
+u
+[0-9a-fA-F]{4}
+)
+)`, name: "constant.character.escape.json5" }, { match: "\\\\.", name: "invalid.illegal.unrecognized-string-escape.json5" }] }, stringSingle: { begin: "[']", beginCaptures: { 0: { name: "punctuation.definition.string.begin.json5" } }, end: "[']", endCaptures: { 0: { name: "punctuation.definition.string.end.json5" } }, name: "string.quoted.json5", patterns: [{ match: `(?x:
+\\\\
+(?:
+["\\\\/bfnrt]
+|
+u
+[0-9a-fA-F]{4}
+)
+)`, name: "constant.character.escape.json5" }, { match: "\\\\.", name: "invalid.illegal.unrecognized-string-escape.json5" }] }, value: { comment: "the 'value' diagram at http://json.org", patterns: [{ include: "#constant" }, { include: "#infinity" }, { include: "#number" }, { include: "#stringSingle" }, { include: "#stringDouble" }, { include: "#array" }, { include: "#object" }] } }, scopeName: "source.json5" }), json5 = [
+        lang2
+      ];
+    }
+  });
+
   // node_modules/crlf-normalize/dist/index.esm.mjs
   var e, n;
   (function(e3) {
@@ -449,7 +488,9 @@
     ["#html_info_extras.prose", !0, {
       isIncludePrompts: !1
     }],
-    ["#html_info_replacer.prose", !0]
+    ["#html_info_replacer.prose", !0],
+    ["#fastpnginfo_geninfo_html", !0]
+    //['#fastpnginfo_geninfo  > label > textarea', true],
   ];
 
   // src/row-config.ts
@@ -472,11 +513,14 @@
   }));
   [
     "Template Generated Grid"
+    //'Dynamic Prompts',
   ].forEach((key2) => RowConfigMap.set(key2, {
     full: !0,
     decode: !0,
-    formatFn(value) {
-      return JSON.stringify(value, null, 2);
+    syntaxHighlighter: !0,
+    syntaxLang: "json5",
+    formatFn(value, key3) {
+      return key3 === "Template Generated Grid" ? JSON.stringify(value, null, 2) : value;
     }
   }));
   [
@@ -2403,11 +2447,11 @@
     }
     return lines;
   }
-  function isPlainLang(lang2) {
-    return !lang2 || ["plaintext", "txt", "text", "plain"].includes(lang2);
+  function isPlainLang(lang3) {
+    return !lang3 || ["plaintext", "txt", "text", "plain"].includes(lang3);
   }
-  function isSpecialLang(lang2) {
-    return lang2 === "ansi" || isPlainLang(lang2);
+  function isSpecialLang(lang3) {
+    return lang3 === "ansi" || isPlainLang(lang3);
   }
   function isNoneTheme(theme) {
     return theme === "none";
@@ -2711,13 +2755,13 @@
     return cssVarMatch ? `var(${cssVarMatch[1]}-dim)` : color;
   }
   function codeToTokensBase(internal, code, options = {}) {
-    let { lang: lang2 = "text", theme: themeName = internal.getLoadedThemes()[0] } = options;
-    if (isPlainLang(lang2) || isNoneTheme(themeName))
+    let { lang: lang3 = "text", theme: themeName = internal.getLoadedThemes()[0] } = options;
+    if (isPlainLang(lang3) || isNoneTheme(themeName))
       return splitLines(code).map((line) => [{ content: line[0], offset: line[1] }]);
     let { theme, colorMap } = internal.setTheme(themeName);
-    if (lang2 === "ansi")
+    if (lang3 === "ansi")
       return tokenizeAnsiWithTheme(theme, code, options);
-    let _grammar = internal.getLanguage(lang2);
+    let _grammar = internal.getLanguage(lang3);
     return tokenizeWithTheme(code, _grammar, theme, colorMap, options);
   }
   function tokenizeWithTheme(code, grammar, theme, colorMap, options) {
@@ -5428,19 +5472,19 @@
       }
       return this._resolvedGrammars[name];
     }
-    async loadLanguage(lang2) {
-      if (this.getGrammar(lang2.name))
+    async loadLanguage(lang3) {
+      if (this.getGrammar(lang3.name))
         return;
-      let embeddedLazilyBy = new Set(Object.values(this._langMap).filter((i2) => i2.embeddedLangsLazy?.includes(lang2.name)));
-      this._resolver.addLanguage(lang2);
+      let embeddedLazilyBy = new Set(Object.values(this._langMap).filter((i2) => i2.embeddedLangsLazy?.includes(lang3.name)));
+      this._resolver.addLanguage(lang3);
       let grammarConfig = {
-        balancedBracketSelectors: lang2.balancedBracketSelectors || ["*"],
-        unbalancedBracketSelectors: lang2.unbalancedBracketSelectors || []
+        balancedBracketSelectors: lang3.balancedBracketSelectors || ["*"],
+        unbalancedBracketSelectors: lang3.unbalancedBracketSelectors || []
       };
-      this._syncRegistry._rawGrammars.set(lang2.scopeName, lang2);
-      let g = await this.loadGrammarWithConfiguration(lang2.scopeName, 1, grammarConfig);
-      if (this._resolvedGrammars[lang2.name] = g, lang2.aliases && lang2.aliases.forEach((alias) => {
-        this._alias[alias] = lang2.name;
+      this._syncRegistry._rawGrammars.set(lang3.scopeName, lang3);
+      let g = await this.loadGrammarWithConfiguration(lang3.scopeName, 1, grammarConfig);
+      if (this._resolvedGrammars[lang3.name] = g, lang3.aliases && lang3.aliases.forEach((alias) => {
+        this._alias[alias] = lang3.name;
       }), this._loadedLanguagesCache = null, embeddedLazilyBy.size)
         for (let e3 of embeddedLazilyBy)
           delete this._resolvedGrammars[e3.name], this._loadedLanguagesCache = null, this._syncRegistry?._injectionGrammars?.delete(e3.scopeName), this._syncRegistry?._grammars?.delete(e3.scopeName), await this.loadLanguage(this._langMap[e3.name]);
@@ -5449,24 +5493,24 @@
       this._themes.map((t3) => this.loadTheme(t3)), await this.loadLanguages(this._langs);
     }
     async loadLanguages(langs) {
-      for (let lang2 of langs)
-        this.resolveEmbeddedLanguages(lang2);
-      let langsGraphArray = Array.from(this._langGraph.entries()), missingLangs = langsGraphArray.filter(([_, lang2]) => !lang2);
+      for (let lang3 of langs)
+        this.resolveEmbeddedLanguages(lang3);
+      let langsGraphArray = Array.from(this._langGraph.entries()), missingLangs = langsGraphArray.filter(([_, lang3]) => !lang3);
       if (missingLangs.length) {
-        let dependents = langsGraphArray.filter(([_, lang2]) => lang2 && lang2.embeddedLangs?.some((l2) => missingLangs.map(([name]) => name).includes(l2))).filter((lang2) => !missingLangs.includes(lang2));
+        let dependents = langsGraphArray.filter(([_, lang3]) => lang3 && lang3.embeddedLangs?.some((l2) => missingLangs.map(([name]) => name).includes(l2))).filter((lang3) => !missingLangs.includes(lang3));
         throw new ShikiError(`Missing languages ${missingLangs.map(([name]) => `\`${name}\``).join(", ")}, required by ${dependents.map(([name]) => `\`${name}\``).join(", ")}`);
       }
-      for (let [_, lang2] of langsGraphArray)
-        this._resolver.addLanguage(lang2);
-      for (let [_, lang2] of langsGraphArray)
-        await this.loadLanguage(lang2);
+      for (let [_, lang3] of langsGraphArray)
+        this._resolver.addLanguage(lang3);
+      for (let [_, lang3] of langsGraphArray)
+        await this.loadLanguage(lang3);
     }
     getLoadedLanguages() {
       return this._loadedLanguagesCache || (this._loadedLanguagesCache = Object.keys({ ...this._resolvedGrammars, ...this._alias })), this._loadedLanguagesCache;
     }
-    resolveEmbeddedLanguages(lang2) {
-      if (this._langMap[lang2.name] = lang2, this._langGraph.set(lang2.name, lang2), lang2.embeddedLangs)
-        for (let embeddedLang of lang2.embeddedLangs)
+    resolveEmbeddedLanguages(lang3) {
+      if (this._langMap[lang3.name] = lang3, this._langGraph.set(lang3.name, lang3), lang3.embeddedLangs)
+        for (let embeddedLang of lang3.embeddedLangs)
           this._langGraph.set(embeddedLang, this._langMap[embeddedLang]);
     }
   }, Resolver = class {
@@ -5507,7 +5551,7 @@
       return Promise.resolve(typeof p2 == "function" ? p2() : p2).then((r3) => r3.default || r3);
     }
     async function resolveLangs(langs2) {
-      return Array.from(new Set((await Promise.all(langs2.filter((l2) => !isSpecialLang(l2)).map(async (lang2) => await normalizeGetter(lang2).then((r3) => Array.isArray(r3) ? r3 : [r3])))).flat()));
+      return Array.from(new Set((await Promise.all(langs2.filter((l2) => !isSpecialLang(l2)).map(async (lang3) => await normalizeGetter(lang3).then((r3) => Array.isArray(r3) ? r3 : [r3])))).flat()));
     }
     let wasmLoader = options.loadWasm || _defaultWasmLoader, [themes, langs] = await Promise.all([
       Promise.all((options.themes || []).map(normalizeGetter)).then((r3) => r3.map(normalizeTheme)),
@@ -5649,8 +5693,10 @@
   async function initHighlighter() {
     let highlighter = cacheHighlighter;
     return highlighter || (highlighter = await getHighlighterCore({
-      // @ts-ignore
-      langs: [prompt],
+      langs: [
+        prompt,
+        () => Promise.resolve().then(() => (init_json5(), json5_exports))
+      ],
       themes: [themeConfig(!0), themeConfig(!1)],
       loadWasm: getWasmInstance
     }), cacheHighlighter = highlighter, highlighter);
@@ -5745,7 +5791,7 @@
     let opts = RowConfigMap.get(key2) ?? {};
     if (typeof value == "string" && value?.length) {
       let doEscapeHTML = !opts.disableEscapeHTML;
-      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), opts.formatFn && (value = await opts.formatFn(value, key2)), doEscapeHTML && (value = escapeHTML(value));
+      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.formatFn && (value = await opts.formatFn(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), doEscapeHTML && (value = escapeHTML(value));
     }
     let sx = opts.full ? "_full" : "", html2 = `<div class="${CLASS_PREFIX}row">`;
     return html2 += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key2)}">${key2}</div>`, html2 += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
@@ -5773,7 +5819,9 @@
   async function renderInfo(parentId, isElem, opts) {
     let app = gradioApp(), elem;
     typeof parentId == "string" && (parentId = app.querySelector(parentId)), isElem && (elem = parentId, parentId = elem.parentNode), elem ??= parentId.querySelector(".infotext");
-    let infotext = elem.innerText?.replace(/^\s+|\s+$/g, ""), html2 = "";
+    let infotext;
+    elem.matches(":input") ? infotext = elem.value : infotext = elem.innerText, infotext = infotext?.replace(/^\s+|\s+$/g, "");
+    let html2 = "";
     if (infotext?.length) {
       let options = {
         ...opts,
