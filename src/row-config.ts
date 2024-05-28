@@ -16,6 +16,7 @@ export interface IRowConfigOptions
 }
 
 export const RowConfigMap = new Map<string, IRowConfigOptions>();
+export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 
 [
 	'Positive Prompt',
@@ -51,6 +52,21 @@ export const RowConfigMap = new Map<string, IRowConfigOptions>();
 		}
 
 		return value
+	}
+}));
+
+[
+	///^ControlNet \d+$/
+].forEach(key => RowConfigMapRegExp.set(key, {
+	full: true,
+	decode: true,
+	syntaxHighlighter: true,
+	syntaxLang: 'json5',
+	formatFn(value, key)
+	{
+		let map = parseFromRawInfo(value);
+
+		return JSON.stringify(map)
 	}
 }));
 

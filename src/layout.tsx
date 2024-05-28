@@ -1,11 +1,25 @@
 import { CLASS_PREFIX } from './const';
-import { RowConfigMap } from './row-config';
+import { RowConfigMap, RowConfigMapRegExp } from './row-config';
 import { syntaxHighlighter } from './highlighter';
 import { IRecordInfo } from '@bluelovers/auto1111-pnginfo';
 
 async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 {
-	let opts = RowConfigMap.get(key) ?? {};
+	let opts = RowConfigMap.get(key);
+
+	if (!opts)
+	{
+		for (let [re, value] of RowConfigMapRegExp.entries())
+		{
+			if (re.test(key))
+			{
+				opts = value;
+				break;
+			}
+		}
+	}
+
+	opts ??= {};
 
 	if (typeof value === 'string' && value?.length)
 	{

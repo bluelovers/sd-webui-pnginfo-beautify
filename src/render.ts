@@ -27,7 +27,7 @@ export async function renderInfo(
 
 	let infotext: string;
 
-	if (elem.matches(':input'))
+	if (elem.matches('textarea'))
 	{
 		// @ts-ignore
 		infotext = elem.value;
