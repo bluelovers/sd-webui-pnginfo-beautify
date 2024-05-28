@@ -9,6 +9,14 @@ export async function renderInfo(
 	opts?: IOptionsInfoparser
 )
 {
+	const inputArgv = {
+		parentId,
+		isElem,
+		opts,
+	};
+
+	console.debug(EXTENSION_NAME, 'renderInfo:inputArgv', inputArgv);
+
 	const app = gradioApp();
 	let elem: HTMLDivElement;
 
@@ -20,7 +28,13 @@ export async function renderInfo(
 	if (isElem)
 	{
 		elem = parentId;
-		parentId = elem.parentNode as HTMLDivElement;
+		parentId = elem?.parentNode as HTMLDivElement;
+	}
+
+	if (!parentId)
+	{
+		console.info(EXTENSION_NAME, 'target not exists', inputArgv)
+		return;
 	}
 
 	elem ??= parentId.querySelector(`.infotext`);
