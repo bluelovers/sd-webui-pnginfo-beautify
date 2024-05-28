@@ -16,7 +16,7 @@
     "build_": "npx esbuild src/index.mts --bundle --outfile=output/javascript/sd-webui-pnginfo-beautify.js --platform=browser --tree-shaking=true --sourcemap --analyze",
     "ci:install": "yarn install --frozen-lockfile && yarn add -W yarn-tool lerna@6 ynpx ts-node ts-jest jest typescript@next @bluelovers/jest-config tsx",
     "ci:build": "yarn run build && yarn run ci:build:commit",
-    "ci:build:commit": "git commit ./output -m \"build: update build\" & echo ci:build:commit",
+    "ci:build:commit": "git add ./output && git commit ./output -m \"build: update build\" & echo ci:build:commit",
     "npm:publish": "echo fake npm publish",
     "npm:publish:bump": "yarn run version:bump && yarn run npm:publish",
     "npm:publish:bump:major": "yarn run version:bump:major && yarn run npm:publish",
