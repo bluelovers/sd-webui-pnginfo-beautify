@@ -481,7 +481,7 @@ u
   var EXTENSION_NAME = "sd-webui-pnginfo-beautify", CLASS_PREFIX = "shiki_infotext_", tabs = [
     "#html_info_txt2img",
     "#html_info_img2img",
-    ["#tab_pnginfo .html-log.prose", !0],
+    ["#tab_pnginfo .html-log.prose, #tab_pnginfo .panel .form + .block.gradio-html div > .prose.gradio-html:first-of-type", !0],
     ["#html_info_x_extras.prose", !0, {
       isIncludePrompts: !1
     }],
