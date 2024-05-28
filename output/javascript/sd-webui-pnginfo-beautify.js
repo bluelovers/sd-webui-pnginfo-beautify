@@ -5836,8 +5836,18 @@ u
 
   // src/render.ts
   async function renderInfo(parentId, isElem, opts) {
+    let inputArgv = {
+      parentId,
+      isElem,
+      opts
+    };
+    console.debug(EXTENSION_NAME, "renderInfo:inputArgv", inputArgv);
     let app = gradioApp(), elem;
-    typeof parentId == "string" && (parentId = app.querySelector(parentId)), isElem && (elem = parentId, parentId = elem.parentNode), elem ??= parentId.querySelector(".infotext");
+    if (typeof parentId == "string" && (parentId = app.querySelector(parentId)), isElem && (elem = parentId, parentId = elem?.parentNode), !parentId) {
+      console.info(EXTENSION_NAME, "target not exists", inputArgv);
+      return;
+    }
+    elem ??= parentId.querySelector(".infotext");
     let infotext;
     elem.matches("textarea") ? infotext = elem.value : infotext = elem.innerText, infotext = infotext?.replace(/^\s+|\s+$/g, "");
     let html2 = "";
