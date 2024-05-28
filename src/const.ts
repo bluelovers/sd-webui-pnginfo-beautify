@@ -7,7 +7,7 @@ export const CLASS_PREFIX = 'shiki_infotext_';
 export const tabs = [
 	'#html_info_txt2img',
 	'#html_info_img2img',
-	['#tab_pnginfo .html-log.prose', true],
+	['#tab_pnginfo .html-log.prose, #tab_pnginfo .panel .form + .block.gradio-html div > .prose.gradio-html:first-of-type', true],
 	['#html_info_x_extras.prose', true, {
 		isIncludePrompts: false,
 	}],
