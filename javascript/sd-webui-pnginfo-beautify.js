@@ -494,7 +494,7 @@ u
   ];
 
   // src/row-config.ts
-  var RowConfigMap = /* @__PURE__ */ new Map();
+  var RowConfigMap = /* @__PURE__ */ new Map(), RowConfigMapRegExp = /* @__PURE__ */ new Map();
   [
     "Positive Prompt",
     "Negative Prompt"
@@ -521,6 +521,18 @@ u
     syntaxLang: "json5",
     formatFn(value, key3) {
       return key3 === "Template Generated Grid" ? JSON.stringify(value, null, 2) : value;
+    }
+  }));
+  [
+    ///^ControlNet \d+$/
+  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
+    full: !0,
+    decode: !0,
+    syntaxHighlighter: !0,
+    syntaxLang: "json5",
+    formatFn(value, key3) {
+      let map = parseFromRawInfo(value);
+      return JSON.stringify(map);
     }
   }));
   [
@@ -5788,8 +5800,15 @@ u
 
   // src/layout.tsx
   async function addRow(key2, value, infoData) {
-    let opts = RowConfigMap.get(key2) ?? {};
-    if (typeof value == "string" && value?.length) {
+    let opts = RowConfigMap.get(key2);
+    if (!opts) {
+      for (let [re2, value2] of RowConfigMapRegExp.entries())
+        if (re2.test(key2)) {
+          opts = value2;
+          break;
+        }
+    }
+    if (opts ??= {}, typeof value == "string" && value?.length) {
       let doEscapeHTML = !opts.disableEscapeHTML;
       opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.formatFn && (value = await opts.formatFn(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), doEscapeHTML && (value = escapeHTML(value));
     }
@@ -5820,7 +5839,7 @@ u
     let app = gradioApp(), elem;
     typeof parentId == "string" && (parentId = app.querySelector(parentId)), isElem && (elem = parentId, parentId = elem.parentNode), elem ??= parentId.querySelector(".infotext");
     let infotext;
-    elem.matches(":input") ? infotext = elem.value : infotext = elem.innerText, infotext = infotext?.replace(/^\s+|\s+$/g, "");
+    elem.matches("textarea") ? infotext = elem.value : infotext = elem.innerText, infotext = infotext?.replace(/^\s+|\s+$/g, "");
     let html2 = "";
     if (infotext?.length) {
       let options = {
