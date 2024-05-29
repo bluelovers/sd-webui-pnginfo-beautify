@@ -1,5 +1,5 @@
 import { CLASS_PREFIX } from './const';
-import { RowConfigMap, RowConfigMapRegExp } from './row-config';
+import { RowConfigMap, RowConfigMapRegExp, RowConfigMapRegExpCached } from './row-config';
 import { syntaxHighlighter } from './highlighter';
 import { IRecordInfo } from '@bluelovers/auto1111-pnginfo';
 
@@ -7,7 +7,7 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 {
 	let opts = RowConfigMap.get(key);
 
-	if (!opts)
+	if (!opts && RowConfigMapRegExpCached?.test(key))
 	{
 		for (let [re, value] of RowConfigMapRegExp.entries())
 		{

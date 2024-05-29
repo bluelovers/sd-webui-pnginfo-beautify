@@ -2,6 +2,7 @@ import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
 import { renderLayout, switchBtn } from './layout';
 import { CLASS_PREFIX, EXTENSION_NAME, tabs } from './const';
 import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
+import { logger } from './logger';
 
 export async function renderInfo(
 	parentId: Extract<typeof tabs[number], string> | HTMLDivElement,
@@ -15,7 +16,7 @@ export async function renderInfo(
 		opts,
 	};
 
-	console.debug(EXTENSION_NAME, 'renderInfo:inputArgv', inputArgv);
+	logger.debug('renderInfo:inputArgv', inputArgv);
 
 	const app = gradioApp();
 	let elem: HTMLDivElement;
@@ -33,7 +34,7 @@ export async function renderInfo(
 
 	if (!parentId)
 	{
-		console.info(EXTENSION_NAME, 'target not exists', inputArgv.parentId, inputArgv)
+		logger.info('target not exists', inputArgv.parentId, inputArgv)
 		return;
 	}
 
@@ -68,7 +69,7 @@ export async function renderInfo(
 			...config
 		} = parseFromRawInfo(infotext, options)
 
-		console.debug(EXTENSION_NAME, 'parseFromRawInfo', {
+		logger.debug('parseFromRawInfo', {
 			prompt,
 			negative_prompt,
 			config,
@@ -95,7 +96,7 @@ export async function renderInfo(
 		let btn = switchBtn(elem);
 		target.parentNode.insertBefore(btn, target);
 
-		console.debug(EXTENSION_NAME, 'switchBtn', {
+		logger.debug('switchBtn', {
 			parentId,
 			elem,
 			target,

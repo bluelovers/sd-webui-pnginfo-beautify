@@ -1,4 +1,5 @@
 import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
+import { logger } from './logger';
 
 type IDecodeFn = (value: string, key: string) => string | PromiseLike<string>
 
@@ -85,12 +86,21 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	'VAE',
 	'ADetailer model',
 ].forEach(key => RowConfigMap.set(key, {
-	decode(value)
-	{
-		return `<span>${value}</span> ${_search(value)}`
-	},
+	decode: simpleSearch,
 	disableEscapeHTML: true,
 }));
+
+[
+	/^ADetailer model \d+\w*$/,
+].forEach(key => RowConfigMapRegExp.set(key, {
+	decode: simpleSearch,
+	disableEscapeHTML: true,
+}));
+
+function simpleSearch(value: string)
+{
+	return `<span>${value}</span> ${_search(value)}`
+}
 
 function _search(query: unknown, text = '&#x1F50E;')
 {
@@ -112,3 +122,17 @@ function decodeHashs(input: string)
 
 	return list.join('')
 }
+
+function mergeMapRegExp()
+{
+	let ls: string[] = [];
+	for (let re of RowConfigMapRegExp.keys())
+	{
+		ls.push(re.source);
+	}
+	const re = ls.length ? new RegExp(ls.join('|')) : null;
+	logger.debug('RowConfigMapRegExpCached', re);
+	return re
+}
+
+export const RowConfigMapRegExpCached = mergeMapRegExp();

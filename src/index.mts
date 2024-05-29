@@ -7,6 +7,7 @@ import { renderInfo } from './render';
 import { initStyle } from './style';
 import { EXTENSION_NAME, tabs } from './const';
 import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
+import { logger } from './logger';
 
 // @ts-ignore
 typeof onUiLoaded === 'undefined' && (onUiLoaded = (fn) => {
@@ -23,7 +24,7 @@ onUiLoaded(async () =>
 		for (let mutation of mutationsList)
 		{
 			const elem = mutation.target as HTMLDivElement;
-			console.info(EXTENSION_NAME, 'observer:mutation', {
+			logger.info('observer:mutation', {
 				type: mutation.type,
 				id: elem?.id,
 				elem,
@@ -31,7 +32,7 @@ onUiLoaded(async () =>
 				_beautifyOpts: (elem as any)._beautifyOpts,
 			})
 			await renderInfo(mutation.target as HTMLDivElement, true, (elem as any)._beautifyOpts)
-				.catch(e => console.error(EXTENSION_NAME, e))
+				.catch(e => logger.error(e))
 		}
 	});
 
@@ -75,7 +76,7 @@ onUiLoaded(async () =>
 					//attributes: true,
 					//attributeFilter: ['title', 'placeholder'],
 				});
-			}).catch(e => console.error(EXTENSION_NAME, {
+			}).catch(e => logger.error({
 				parentId,
 				isElem,
 				opts,
@@ -83,5 +84,5 @@ onUiLoaded(async () =>
 		;
 	}
 
-	console.info(EXTENSION_NAME, `onUiLoaded`, temp)
+	logger.info(`onUiLoaded`, temp)
 })
