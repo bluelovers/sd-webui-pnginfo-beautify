@@ -36,28 +36,28 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 
 #### SyntaxHighlighter
 
-- Positive Prompt
-- Negative Prompt
-- sv_prompt
-- Template
-- Template Generated
+- `Positive Prompt`
+- `Negative Prompt`
+- `sv_prompt`
+- `Template` from [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts)
+- `Template Generated` from [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts)
 
 #### hashes
 
-- TI hashes
-- Lora hashes
+- `TI hashes`
+- `Lora hashes`
 
 #### Searchs
 
-- Model hash
-- Model
-- VAE hash
-- VAE
-- ADetailer model
+- `Model hash`
+- `Model`
+- `VAE hash`
+- `VAE`
+- `ADetailer model` from [ADetailer](https://github.com/Bing-su/adetailer)
 
 #### decode
 
-- Template Generated Grid
+- `Template Generated Grid` from [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts)
 
 ![Template Generated Grid.png](docs/Template%20Generated%20Grid.png)
 
