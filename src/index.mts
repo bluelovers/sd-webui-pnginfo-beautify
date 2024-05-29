@@ -47,10 +47,18 @@ onUiLoaded(async () =>
 		}
 
 		await renderInfo(parentId, isElem, opts)
-			.then(({
-				html,
-				...ret
-			}) => {
+			.then((map) => {
+
+				if (!map)
+				{
+					return;
+				}
+
+				let {
+					html,
+					...ret
+				} = map;
+
 				temp.push({
 					...ret,
 					isElem,
@@ -67,7 +75,11 @@ onUiLoaded(async () =>
 					//attributes: true,
 					//attributeFilter: ['title', 'placeholder'],
 				});
-			}).catch(e => console.error(EXTENSION_NAME, e))
+			}).catch(e => console.error(EXTENSION_NAME, {
+				parentId,
+				isElem,
+				opts,
+			}, e))
 		;
 	}
 

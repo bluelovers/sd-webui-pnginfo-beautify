@@ -33,7 +33,7 @@ export async function renderInfo(
 
 	if (!parentId)
 	{
-		console.info(EXTENSION_NAME, 'target not exists', inputArgv)
+		console.info(EXTENSION_NAME, 'target not exists', inputArgv.parentId, inputArgv)
 		return;
 	}
 
