@@ -5844,7 +5844,7 @@ u
     console.debug(EXTENSION_NAME, "renderInfo:inputArgv", inputArgv);
     let app = gradioApp(), elem;
     if (typeof parentId == "string" && (parentId = app.querySelector(parentId)), isElem && (elem = parentId, parentId = elem?.parentNode), !parentId) {
-      console.info(EXTENSION_NAME, "target not exists", inputArgv);
+      console.info(EXTENSION_NAME, "target not exists", inputArgv.parentId, inputArgv);
       return;
     }
     elem ??= parentId.querySelector(".infotext");
@@ -6000,10 +6000,13 @@ u
     }), temp = [];
     for (let parentId of tabs) {
       let isElem, opts;
-      Array.isArray(parentId) && ([parentId, isElem, opts] = parentId), await renderInfo(parentId, isElem, opts).then(({
-        html: html2,
-        ...ret
-      }) => {
+      Array.isArray(parentId) && ([parentId, isElem, opts] = parentId), await renderInfo(parentId, isElem, opts).then((map) => {
+        if (!map)
+          return;
+        let {
+          html: html2,
+          ...ret
+        } = map;
         temp.push({
           ...ret,
           isElem,
@@ -6015,7 +6018,11 @@ u
           //attributes: true,
           //attributeFilter: ['title', 'placeholder'],
         });
-      }).catch((e3) => console.error(EXTENSION_NAME, e3));
+      }).catch((e3) => console.error(EXTENSION_NAME, {
+        parentId,
+        isElem,
+        opts
+      }, e3));
     }
     console.info(EXTENSION_NAME, "onUiLoaded", temp);
   });
