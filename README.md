@@ -59,7 +59,7 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 
 - Template Generated Grid
 
-![Template Generated Grid.png](docs/Template Generated Grid.png)
+![Template Generated Grid.png](docs/Template%20Generated%20Grid.png)
 
 ### Others
 
