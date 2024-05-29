@@ -493,6 +493,15 @@ u
     //['#fastpnginfo_geninfo  > label > textarea', true],
   ];
 
+  // src/logger.ts
+  function initLogger() {
+    return Object.keys(console).reduce((log, method) => {
+      let fn = console[method];
+      return typeof fn == "function" && (log[method] = fn.bind(console, EXTENSION_NAME)), log;
+    }, {});
+  }
+  var logger = initLogger();
+
   // src/row-config.ts
   var RowConfigMap = /* @__PURE__ */ new Map(), RowConfigMapRegExp = /* @__PURE__ */ new Map();
   [
@@ -549,11 +558,18 @@ u
     "VAE",
     "ADetailer model"
   ].forEach((key2) => RowConfigMap.set(key2, {
-    decode(value) {
-      return `<span>${value}</span> ${_search(value)}`;
-    },
+    decode: simpleSearch,
     disableEscapeHTML: !0
   }));
+  [
+    /^ADetailer model \d+\w*$/
+  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
+    decode: simpleSearch,
+    disableEscapeHTML: !0
+  }));
+  function simpleSearch(value) {
+    return `<span>${value}</span> ${_search(value)}`;
+  }
   function _search(query, text2 = "&#x1F50E;") {
     return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
   }
@@ -563,6 +579,14 @@ u
       list.push(`<div>${_search(key2, "&#x1F50D;")} <span>${key2}</span>: <span>${value}</span> ${_search(value)}</div>`);
     }), list.join("");
   }
+  function mergeMapRegExp() {
+    let ls = [];
+    for (let re3 of RowConfigMapRegExp.keys())
+      ls.push(re3.source);
+    let re2 = ls.length ? new RegExp(ls.join("|")) : null;
+    return logger.debug("RowConfigMapRegExpCached", re2), re2;
+  }
+  var RowConfigMapRegExpCached = mergeMapRegExp();
 
   // node_modules/@shikijs/core/dist/types.mjs
   var FontStyle;
@@ -5801,7 +5825,7 @@ u
   // src/layout.tsx
   async function addRow(key2, value, infoData) {
     let opts = RowConfigMap.get(key2);
-    if (!opts) {
+    if (!opts && RowConfigMapRegExpCached?.test(key2)) {
       for (let [re2, value2] of RowConfigMapRegExp.entries())
         if (re2.test(key2)) {
           opts = value2;
@@ -5841,10 +5865,10 @@ u
       isElem,
       opts
     };
-    console.debug(EXTENSION_NAME, "renderInfo:inputArgv", inputArgv);
+    logger.debug("renderInfo:inputArgv", inputArgv);
     let app = gradioApp(), elem;
     if (typeof parentId == "string" && (parentId = app.querySelector(parentId)), isElem && (elem = parentId, parentId = elem?.parentNode), !parentId) {
-      console.info(EXTENSION_NAME, "target not exists", inputArgv.parentId, inputArgv);
+      logger.info("target not exists", inputArgv.parentId, inputArgv);
       return;
     }
     elem ??= parentId.querySelector(".infotext");
@@ -5860,7 +5884,7 @@ u
         negative_prompt,
         ...config
       } = parseFromRawInfo(infotext, options);
-      console.debug(EXTENSION_NAME, "parseFromRawInfo", {
+      logger.debug("parseFromRawInfo", {
         prompt: prompt2,
         negative_prompt,
         config,
@@ -5877,7 +5901,7 @@ u
     else {
       elem.insertAdjacentHTML("afterend", `<div class="prose gradio-html ${CLASS_PREFIX}root">${html2}</div>`), target = parentId.querySelector(`.${CLASS_PREFIX}root`);
       let btn = switchBtn(elem);
-      target.parentNode.insertBefore(btn, target), console.debug(EXTENSION_NAME, "switchBtn", {
+      target.parentNode.insertBefore(btn, target), logger.debug("switchBtn", {
         parentId,
         elem,
         target,
@@ -5989,13 +6013,13 @@ u
     let app = gradioApp(), observer = new MutationObserver(async (mutationsList, observer2) => {
       for (let mutation of mutationsList) {
         let elem = mutation.target;
-        console.info(EXTENSION_NAME, "observer:mutation", {
+        logger.info("observer:mutation", {
           type: mutation.type,
           id: elem?.id,
           elem,
           mutation,
           _beautifyOpts: elem._beautifyOpts
-        }), await renderInfo(mutation.target, !0, elem._beautifyOpts).catch((e3) => console.error(EXTENSION_NAME, e3));
+        }), await renderInfo(mutation.target, !0, elem._beautifyOpts).catch((e3) => logger.error(e3));
       }
     }), temp = [];
     for (let parentId of tabs) {
@@ -6018,13 +6042,13 @@ u
           //attributes: true,
           //attributeFilter: ['title', 'placeholder'],
         });
-      }).catch((e3) => console.error(EXTENSION_NAME, {
+      }).catch((e3) => logger.error({
         parentId,
         isElem,
         opts
       }, e3));
     }
-    console.info(EXTENSION_NAME, "onUiLoaded", temp);
+    logger.info("onUiLoaded", temp);
   });
 })();
 //# sourceMappingURL=sd-webui-pnginfo-beautify.js.map
