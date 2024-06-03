@@ -29,6 +29,7 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/const.t
 - Extras
 - [Replacer](https://github.com/light-and-ray/sd-webui-replacer)
 - [Fast PNG Info](https://github.com/NoCrypt/sd-fast-pnginfo)
+- [Agent Scheduler 任務排程代理](https://github.com/ArtVentureX/sd-webui-agent-scheduler)
 
 ### Supported fields
 

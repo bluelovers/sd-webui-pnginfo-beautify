@@ -489,8 +489,12 @@ u
       isIncludePrompts: !1
     }],
     ["#html_info_replacer.prose", !0],
-    ["#fastpnginfo_geninfo_html", !0]
+    ["#fastpnginfo_geninfo_html", !0],
     //['#fastpnginfo_geninfo  > label > textarea', true],
+    /**
+     * is trigger by style
+     */
+    ["#agent_scheduler_history_infotext textarea", !0]
   ];
 
   // src/logger.ts
@@ -5872,8 +5876,8 @@ u
       return;
     }
     elem ??= parentId.querySelector(".infotext");
-    let infotext;
-    elem.matches("textarea") ? infotext = elem.value : infotext = elem.innerText, infotext = infotext?.replace(/^\s+|\s+$/g, "");
+    let infotext, isInput = elem.matches("textarea, input");
+    isInput ? infotext = elem.value : infotext = elem.innerText, infotext = infotext?.replace(/^\s+|\s+$/g, "");
     let html2 = "";
     if (infotext?.length) {
       let options = {
@@ -5908,12 +5912,21 @@ u
         btn
       });
     }
-    return html2.length ? (elem.style.display = "none", target.style.display = "block") : (elem.style.display = "block", target.style.display = "none"), {
+    return html2.length ? (changeDisplay(elem, !1), changeDisplay(target, !0)) : (changeDisplay(elem, !0), changeDisplay(target, !1)), {
       parentId,
       elem,
       target,
-      html: html2
+      html: html2,
+      isInput
     };
+  }
+  function changeDisplay(elem, show) {
+    let display = elem.style.display?.toLowerCase();
+    if (typeof elem.dataset.originalDisplay > "u") {
+      let value = getComputedStyle(elem).display?.toLowerCase();
+      (!value?.length || value === "none") && (value = "block"), elem.dataset.originalDisplay = value;
+    }
+    show && ![elem.dataset.originalDisplay, "block"].includes(display) ? elem.style.display = elem.dataset.originalDisplay : !show && display !== "none" && (elem.style.display = "none");
   }
 
   // src/style.scss
@@ -6006,6 +6019,29 @@ u
     return $styleEL || ($styleEL = document.createElement("style"), gradioApp().appendChild($styleEL)), $styleEL.id = "sd-webui-pnginfo-beautify-style", $styleEL.type = "text/css", $styleEL.styleSheet ? $styleEL.styleSheet.cssText = style_default : $styleEL.innerHTML = style_default, $styleEL;
   }
 
+  // src/observer.ts
+  function observerObserve(target, observer, cacheInfo) {
+    if (cacheInfo.isInput) {
+      let fn = function(evt, ...argv) {
+        logger.debug(evt, argv);
+      };
+      logger.debug("try watch input value", target, cacheInfo), observer.observe(target, {
+        //characterData: true,
+        //childList: true,
+        //subtree: true,
+        attributes: !0
+        //attributeFilter: ['title', 'placeholder'],
+      }), target.addEventListener("input", fn), target.addEventListener("change", fn);
+    } else
+      observer.observe(target, {
+        //characterData: true,
+        childList: !0
+        //subtree: true,
+        //attributes: true,
+        //attributeFilter: ['title', 'placeholder'],
+      });
+  }
+
   // src/index.mts
   typeof onUiLoaded > "u" && (onUiLoaded = (fn) => document.addEventListener("DOMContentLoaded", fn));
   onUiLoaded(async () => {
@@ -6019,6 +6055,9 @@ u
           elem,
           mutation,
           _beautifyOpts: elem._beautifyOpts
+        }, mutation.type === "attributes" && {
+          attributeName: mutation.attributeName,
+          attributeValue: elem[mutation.attributeName]
         }), await renderInfo(mutation.target, !0, elem._beautifyOpts).catch((e3) => logger.error(e3));
       }
     }), temp = [];
@@ -6030,18 +6069,12 @@ u
         let {
           html: html2,
           ...ret
-        } = map;
-        temp.push({
+        } = map, tempOpts = {
           ...ret,
           isElem,
           opts
-        }), ret.elem._beautifyOpts = opts, observer.observe(ret.elem, {
-          //characterData: true,
-          childList: !0
-          //subtree: true,
-          //attributes: true,
-          //attributeFilter: ['title', 'placeholder'],
-        });
+        };
+        return temp.push(tempOpts), ret.elem._beautifyOpts = opts, observerObserve(ret.elem, observer, tempOpts);
       }).catch((e3) => logger.error({
         parentId,
         isElem,
