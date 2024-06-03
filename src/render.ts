@@ -41,8 +41,9 @@ export async function renderInfo(
 	elem ??= parentId.querySelector(`.infotext`);
 
 	let infotext: string;
+	const isInput = elem.matches('textarea, input');
 
-	if (elem.matches('textarea'))
+	if (isInput)
 	{
 		// @ts-ignore
 		infotext = elem.value;
@@ -110,13 +111,13 @@ export async function renderInfo(
 
 	if (html.length)
 	{
-		elem.style.display = 'none';
-		target.style.display = 'block';
+		changeDisplay(elem, false);
+		changeDisplay(target, true);
 	}
 	else
 	{
-		elem.style.display = 'block';
-		target.style.display = 'none';
+		changeDisplay(elem, true);
+		changeDisplay(target, false);
 	}
 
 	return {
@@ -124,5 +125,32 @@ export async function renderInfo(
 		elem,
 		target,
 		html,
+		isInput,
+	}
+}
+
+function changeDisplay(elem: HTMLDivElement, show: boolean)
+{
+	const display = elem.style.display?.toLowerCase();
+
+	if (typeof elem.dataset['originalDisplay'] === 'undefined')
+	{
+		let value = getComputedStyle(elem).display?.toLowerCase();
+
+		if (!value?.length || value === 'none')
+		{
+			value = 'block'
+		}
+
+		elem.dataset['originalDisplay'] = value
+	}
+
+	if (show && ![elem.dataset['originalDisplay'], 'block'].includes(display))
+	{
+		elem.style.display = elem.dataset['originalDisplay']
+	}
+	else if (!show && display !== 'none')
+	{
+		elem.style.display = 'none'
 	}
 }

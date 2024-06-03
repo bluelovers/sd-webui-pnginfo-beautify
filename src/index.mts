@@ -8,6 +8,7 @@ import { initStyle } from './style';
 import { EXTENSION_NAME, tabs } from './const';
 import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
+import { observerObserve } from './observer';
 
 // @ts-ignore
 typeof onUiLoaded === 'undefined' && (onUiLoaded = (fn) => {
@@ -30,6 +31,9 @@ onUiLoaded(async () =>
 				elem,
 				mutation,
 				_beautifyOpts: (elem as any)._beautifyOpts,
+			}, mutation.type === 'attributes' && {
+				attributeName: mutation.attributeName,
+				attributeValue: elem[mutation.attributeName],
 			})
 			await renderInfo(mutation.target as HTMLDivElement, true, (elem as any)._beautifyOpts)
 				.catch(e => logger.error(e))
@@ -60,22 +64,18 @@ onUiLoaded(async () =>
 					...ret
 				} = map;
 
-				temp.push({
+				let tempOpts = {
 					...ret,
 					isElem,
 					opts,
-				});
+				}
+
+				temp.push(tempOpts);
 
 				// @ts-ignore
 				ret.elem._beautifyOpts = opts;
 
-				observer.observe(ret.elem, {
-					//characterData: true,
-					childList: true,
-					//subtree: true,
-					//attributes: true,
-					//attributeFilter: ['title', 'placeholder'],
-				});
+				return observerObserve(ret.elem, observer, tempOpts);
 			}).catch(e => logger.error({
 				parentId,
 				isElem,

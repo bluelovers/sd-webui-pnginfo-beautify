@@ -17,4 +17,8 @@ export const tabs = [
 	['#html_info_replacer.prose', true],
 	['#fastpnginfo_geninfo_html', true],
 	//['#fastpnginfo_geninfo  > label > textarea', true],
+	/**
+	 * is trigger by style
+	 */
+	['#agent_scheduler_history_infotext textarea', true],
 ] satisfies (string | [string, boolean, opts?: IOptionsInfoparser])[];
