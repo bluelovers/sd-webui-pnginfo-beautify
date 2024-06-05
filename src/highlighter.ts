@@ -113,7 +113,7 @@ export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = 
 	const highlighter = await initHighlighter();
 	return highlighter.codeToHtml(code, {
 		lang: opts.syntaxLang ?? 'prompt',
-		theme: 'dark',
+		theme: opts.syntaxTheme ?? 'dark',
 		mergeWhitespaces: true,
 		transformers: [
 			{

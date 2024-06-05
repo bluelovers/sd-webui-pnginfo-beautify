@@ -1,8 +1,17 @@
 import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
+import { syntaxHighlighter } from './highlighter';
 
 type IDecodeFn = (value: string, key: string) => string | PromiseLike<string>
-type ISyntaxHighlighterFn = (code: string, opts?: IRowConfigOptions, key?: string) => string | PromiseLike<string>
+
+interface ISyntaxHighlighterFn
+{
+	<T extends any>(code: T, opts?: IRowConfigOptions, key?: string): string | PromiseLike<string>
+
+//	(code: string, opts?: IRowConfigOptions, key?: string): string | PromiseLike<string>
+
+	(code: any, opts?: IRowConfigOptions, key?: string): string | PromiseLike<string>
+}
 
 export interface IRowConfigOptions
 {
@@ -10,6 +19,7 @@ export interface IRowConfigOptions
 
 	syntaxHighlighter?: boolean | ISyntaxHighlighterFn,
 	syntaxLang?: string,
+	syntaxTheme?: 'github-dark' | 'dark',
 
 	formatFn?: IDecodeFn,
 
@@ -44,13 +54,21 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 ].forEach(key => RowConfigMap.set(key, {
 	full: true,
 	decode: true,
-	syntaxHighlighter: true,
+	async syntaxHighlighter(ls: string[])
+	{
+		ls = await Promise.all(ls.map(value =>
+		{
+			return syntaxHighlighter(value);
+		}))
+
+		return ls.join('<hr/>');
+	},
 	syntaxLang: 'json5',
 	formatFn(value, key)
 	{
 		if (key === 'Template Generated Grid')
 		{
-			return JSON.stringify(value, null, 2)
+			//return JSON.stringify(value, null, 2)
 		}
 
 		return value

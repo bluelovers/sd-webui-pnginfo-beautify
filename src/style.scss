@@ -8,6 +8,18 @@
 	{
 		transition: .15s;
 	}
+
+	hr.shiki_infotext_hr
+	{
+		margin: var(--spacing-md);
+		border-top-style: dashed;
+		opacity: 0.5;
+
+		@at-root .prose &
+		{
+			@extend .shiki_infotext_hr;
+		}
+	}
 }
 
 .shiki_infotext_show_hide_div
