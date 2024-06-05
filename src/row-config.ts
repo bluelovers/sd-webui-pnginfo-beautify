@@ -2,12 +2,13 @@ import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
 
 type IDecodeFn = (value: string, key: string) => string | PromiseLike<string>
+type ISyntaxHighlighterFn = (code: string, opts?: IRowConfigOptions, key?: string) => string | PromiseLike<string>
 
 export interface IRowConfigOptions
 {
 	full?: boolean,
 
-	syntaxHighlighter?: boolean,
+	syntaxHighlighter?: boolean | ISyntaxHighlighterFn,
 	syntaxLang?: string,
 
 	formatFn?: IDecodeFn,

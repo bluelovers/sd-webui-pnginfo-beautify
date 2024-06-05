@@ -108,7 +108,7 @@ function themeConfig(isDarkMode: boolean)
 	} satisfies ThemeInput;
 }
 
-export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = {})
+export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = {}, key?: string)
 {
 	const highlighter = await initHighlighter();
 	return highlighter.codeToHtml(code, {

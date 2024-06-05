@@ -1,9 +1,9 @@
 import { CLASS_PREFIX } from './const';
-import { RowConfigMap, RowConfigMapRegExp, RowConfigMapRegExpCached } from './row-config';
+import { IRowConfigOptions, RowConfigMap, RowConfigMapRegExp, RowConfigMapRegExpCached } from './row-config';
 import { syntaxHighlighter } from './highlighter';
 import { IRecordInfo } from '@bluelovers/auto1111-pnginfo';
 
-async function addRow(key: string, value: any, infoData: ILayoutInfoData)
+export function _addRowCoreOptions(key: string, value: any, infoData: ILayoutInfoData)
 {
 	let opts = RowConfigMap.get(key);
 
@@ -21,6 +21,11 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 
 	opts ??= {};
 
+	return opts
+}
+
+export async function _addRowCore(key: string, value: any, infoData: ILayoutInfoData, opts: IRowConfigOptions)
+{
 	if (typeof value === 'string' && value?.length)
 	{
 		let doEscapeHTML = !opts.disableEscapeHTML;
@@ -46,7 +51,7 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 		{
 			doEscapeHTML = false;
 
-			value = await syntaxHighlighter(value, opts);
+			value = await (opts.syntaxHighlighter === true ? syntaxHighlighter : opts.syntaxHighlighter)(value, opts, key);
 		}
 
 		if (doEscapeHTML)
@@ -55,7 +60,20 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 		}
 	}
 
-	let sx = opts.full ? '_full' : '';
+	return {
+		key,
+		value,
+		opts,
+	}
+}
+
+async function addRow(key: string, value: any, infoData: ILayoutInfoData)
+{
+	const opts = _addRowCoreOptions(key, value, infoData);
+	({ key, value} = await _addRowCore(key, value, infoData, opts));
+
+	const sx = opts.full ? '_full' : '';
+
 	let html = `<div class="${CLASS_PREFIX}row">`;
 	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}</div>`;
 	html += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`;
