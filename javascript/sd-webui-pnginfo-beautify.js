@@ -506,92 +506,6 @@ u
   }
   var logger = initLogger();
 
-  // src/row-config.ts
-  var RowConfigMap = /* @__PURE__ */ new Map(), RowConfigMapRegExp = /* @__PURE__ */ new Map();
-  [
-    "Positive Prompt",
-    "Negative Prompt"
-  ].forEach((key2) => RowConfigMap.set(key2, {
-    full: !0,
-    syntaxHighlighter: !0
-  }));
-  [
-    "sv_prompt",
-    "Template",
-    "Template Generated"
-  ].forEach((key2) => RowConfigMap.set(key2, {
-    full: !0,
-    syntaxHighlighter: !0,
-    decode: !0
-  }));
-  [
-    "Template Generated Grid"
-    //'Dynamic Prompts',
-  ].forEach((key2) => RowConfigMap.set(key2, {
-    full: !0,
-    decode: !0,
-    syntaxHighlighter: !0,
-    syntaxLang: "json5",
-    formatFn(value, key3) {
-      return key3 === "Template Generated Grid" ? JSON.stringify(value, null, 2) : value;
-    }
-  }));
-  [
-    ///^ControlNet \d+$/
-  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
-    full: !0,
-    decode: !0,
-    syntaxHighlighter: !0,
-    syntaxLang: "json5",
-    formatFn(value, key3) {
-      let map = parseFromRawInfo(value);
-      return JSON.stringify(map);
-    }
-  }));
-  [
-    "TI hashes",
-    "Lora hashes"
-  ].forEach((key2) => RowConfigMap.set(key2, {
-    decode: decodeHashs,
-    disableEscapeHTML: !0
-  }));
-  [
-    "Model hash",
-    "Model",
-    "VAE hash",
-    "VAE",
-    "ADetailer model"
-  ].forEach((key2) => RowConfigMap.set(key2, {
-    decode: simpleSearch,
-    disableEscapeHTML: !0
-  }));
-  [
-    /^ADetailer model \d+\w*$/
-  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
-    decode: simpleSearch,
-    disableEscapeHTML: !0
-  }));
-  function simpleSearch(value) {
-    return `<span>${value}</span> ${_search(value)}`;
-  }
-  function _search(query, text2 = "&#x1F50E;") {
-    return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
-  }
-  function decodeHashs(input) {
-    let map = parseFromRawInfo(JSON.parse(input)), list = [];
-    return Object.entries(map).forEach(([key2, value]) => {
-      list.push(`<div>${_search(key2, "&#x1F50D;")} <span>${key2}</span>: <span>${value}</span> ${_search(value)}</div>`);
-    }), list.join("");
-  }
-  function mergeMapRegExp() {
-    let ls = [];
-    for (let re3 of RowConfigMapRegExp.keys())
-      ls.push(re3.source);
-    let re2 = ls.length ? new RegExp(ls.join("|")) : null;
-    return logger.debug("RowConfigMapRegExpCached", re2), re2;
-  }
-  var RowConfigMapRegExpCached = mergeMapRegExp();
-
   // node_modules/@shikijs/core/dist/types.mjs
   var FontStyle;
   (function(FontStyle2) {
@@ -5808,10 +5722,10 @@ u
       type
     };
   }
-  async function syntaxHighlighter(code, opts = {}) {
+  async function syntaxHighlighter(code, opts = {}, key2) {
     return (await initHighlighter()).codeToHtml(code, {
       lang: opts.syntaxLang ?? "prompt",
-      theme: "dark",
+      theme: opts.syntaxTheme ?? "dark",
       mergeWhitespaces: !0,
       transformers: [
         {
@@ -5826,8 +5740,96 @@ u
     });
   }
 
+  // src/row-config.ts
+  var RowConfigMap = /* @__PURE__ */ new Map(), RowConfigMapRegExp = /* @__PURE__ */ new Map();
+  [
+    "Positive Prompt",
+    "Negative Prompt"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    full: !0,
+    syntaxHighlighter: !0
+  }));
+  [
+    "sv_prompt",
+    "Template",
+    "Template Generated"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    full: !0,
+    syntaxHighlighter: !0,
+    decode: !0
+  }));
+  [
+    "Template Generated Grid"
+    //'Dynamic Prompts',
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    full: !0,
+    decode: !0,
+    async syntaxHighlighter(ls) {
+      return ls = await Promise.all(ls.map((value) => syntaxHighlighter(value))), ls.join("<hr/>");
+    },
+    syntaxLang: "json5",
+    formatFn(value, key3) {
+      return value;
+    }
+  }));
+  [
+    ///^ControlNet \d+$/
+  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
+    full: !0,
+    decode: !0,
+    syntaxHighlighter: !0,
+    syntaxLang: "json5",
+    formatFn(value, key3) {
+      let map = parseFromRawInfo(value);
+      return JSON.stringify(map);
+    }
+  }));
+  [
+    "TI hashes",
+    "Lora hashes"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    decode: decodeHashs,
+    disableEscapeHTML: !0
+  }));
+  [
+    "Model hash",
+    "Model",
+    "VAE hash",
+    "VAE",
+    "ADetailer model"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    decode: simpleSearch,
+    disableEscapeHTML: !0
+  }));
+  [
+    /^ADetailer model \d+\w*$/
+  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
+    decode: simpleSearch,
+    disableEscapeHTML: !0
+  }));
+  function simpleSearch(value) {
+    return `<span>${value}</span> ${_search(value)}`;
+  }
+  function _search(query, text2 = "&#x1F50E;") {
+    return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
+  }
+  function decodeHashs(input) {
+    let map = parseFromRawInfo(JSON.parse(input)), list = [];
+    return Object.entries(map).forEach(([key2, value]) => {
+      list.push(`<div>${_search(key2, "&#x1F50D;")} <span>${key2}</span>: <span>${value}</span> ${_search(value)}</div>`);
+    }), list.join("");
+  }
+  function mergeMapRegExp() {
+    let ls = [];
+    for (let re3 of RowConfigMapRegExp.keys())
+      ls.push(re3.source);
+    let re2 = ls.length ? new RegExp(ls.join("|")) : null;
+    return logger.debug("RowConfigMapRegExpCached", re2), re2;
+  }
+  var RowConfigMapRegExpCached = mergeMapRegExp();
+
   // src/layout.tsx
-  async function addRow(key2, value, infoData) {
+  function _addRowCoreOptions(key2, value, infoData) {
     let opts = RowConfigMap.get(key2);
     if (!opts && RowConfigMapRegExpCached?.test(key2)) {
       for (let [re2, value2] of RowConfigMapRegExp.entries())
@@ -5836,10 +5838,22 @@ u
           break;
         }
     }
-    if (opts ??= {}, typeof value == "string" && value?.length) {
+    return opts ??= {}, opts;
+  }
+  async function _addRowCore(key2, value, infoData, opts) {
+    if (typeof value == "string" && value?.length) {
       let doEscapeHTML = !opts.disableEscapeHTML;
-      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.formatFn && (value = await opts.formatFn(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await syntaxHighlighter(value, opts)), doEscapeHTML && (value = escapeHTML(value));
+      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.formatFn && (value = await opts.formatFn(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await (opts.syntaxHighlighter === !0 ? syntaxHighlighter : opts.syntaxHighlighter)(value, opts, key2)), doEscapeHTML && (value = escapeHTML(value));
     }
+    return {
+      key: key2,
+      value,
+      opts
+    };
+  }
+  async function addRow(key2, value, infoData) {
+    let opts = _addRowCoreOptions(key2, value, infoData);
+    ({ key: key2, value } = await _addRowCore(key2, value, infoData, opts));
     let sx = opts.full ? "_full" : "", html2 = `<div class="${CLASS_PREFIX}row">`;
     return html2 += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key2)}">${key2}</div>`, html2 += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`, html2 += "</div>", html2;
   }
@@ -5938,7 +5952,11 @@ u
 .shiki_infotext_root, .shiki_infotext_root .infotext, .shiki_infotext_root #tab_pnginfo .html-log.prose, .shiki_infotext_root #html_info_x_extras.prose, .shiki_infotext_root #html_info_extras.prose, .shiki_infotext_root #html_info_replacer.prose {
   transition: 0.15s;
 }
-
+.shiki_infotext_root hr.shiki_infotext_hr, .prose .shiki_infotext_root hr.shiki_infotext_hr {
+  margin: var(--spacing-md);
+  border-top-style: dashed;
+  opacity: 0.5;
+}
 .shiki_infotext_show_hide_div {
   text-align: right;
   padding: 10px;
@@ -6011,7 +6029,7 @@ u
 .infotext .pending:hover {
   opacity: 1;
 }
-/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvc2Qtd2VidWktcG5naW5mby1iZWF1dGlmeS9zZC13ZWJ1aS1wbmdpbmZvLWJlYXV0aWZ5L3NyYyIsInNvdXJjZXMiOlsic3R5bGUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVDO0VBQ0E7RUFDQTs7QUFFQTtFQUVDOzs7QUFJRjtFQUVDO0VBQ0E7O0FBRUE7RUFFQztFQUNBO0VBQ0E7RUFFQTtFQUNBO0VBQ0E7OztBQUtGO0VBRUM7RUFDQTtFQUNBOztBQUVBO0VBRUM7RUFDQTtFQUNBOztBQUVBO0VBRUM7RUFDQTtFQUNBOztBQUdEO0VBRUM7RUFDQTs7QUFHRDtFQUVDOztBQUdEO0VBRUM7O0FBS0E7RUFFQzs7QUFHRDtFQUVDOztBQUlGO0VBRUM7QUFDQTtFQUNBOztBQUdEO0VBRUM7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUdEO0VBRUM7RUFDQTs7QUFFQTtFQUVDO0VBQ0E7O0FBR0Q7RUFFQzs7O0FBTUo7RUFFQyIsInNvdXJjZXNDb250ZW50IjpbIi5zaGlraV9pbmZvdGV4dF9yb290XG57XG5cdG1heC1oZWlnaHQ6IDQ2LjVlbTtcblx0b3ZlcmZsb3cteTogYXV0bztcblx0bWFyZ2luLWJvdHRvbTogMjBweCAhaW1wb3J0YW50O1xuXG5cdCYsIC5pbmZvdGV4dCwgI3RhYl9wbmdpbmZvIC5odG1sLWxvZy5wcm9zZSwgI2h0bWxfaW5mb194X2V4dHJhcy5wcm9zZSwgI2h0bWxfaW5mb19leHRyYXMucHJvc2UsICNodG1sX2luZm9fcmVwbGFjZXIucHJvc2Vcblx0e1xuXHRcdHRyYW5zaXRpb246IC4xNXM7XG5cdH1cbn1cblxuLnNoaWtpX2luZm90ZXh0X3Nob3dfaGlkZV9kaXZcbntcblx0dGV4dC1hbGlnbjogcmlnaHQ7XG5cdHBhZGRpbmc6IDEwcHg7XG5cblx0LnNoaWtpX2luZm90ZXh0X3Nob3dfaGlkZV9idG5cblx0e1xuXHRcdGJvcmRlcjogdmFyKC0tYnV0dG9uLWJvcmRlci13aWR0aCkgc29saWQgdmFyKC0tYnV0dG9uLXNlY29uZGFyeS1ib3JkZXItY29sb3IpO1xuXHRcdGJhY2tncm91bmQ6IHZhcigtLWJ1dHRvbi1zZWNvbmRhcnktYmFja2dyb3VuZC1maWxsKTtcblx0XHRjb2xvcjogdmFyKC0tYnV0dG9uLXNlY29uZGFyeS10ZXh0LWNvbG9yKTtcblxuXHRcdHBvc2l0aW9uOiBzdGlja3k7XG5cdFx0dG9wOiAwO1xuXHRcdHJpZ2h0OiAwO1xuXHR9XG5cbn1cblxuLnNoaWtpX2luZm90ZXh0X21haW5cbntcblx0ZGlzcGxheTogZmxleDtcblx0ZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblx0cGFkZGluZzogNXB4O1xuXG5cdC5zaGlraV9pbmZvdGV4dF9yb3dcblx0e1xuXHRcdGRpc3BsYXk6IGZsZXg7XG5cdFx0ZmxleC13cmFwOiB3cmFwO1xuXHRcdG1hcmdpbi1ib3R0b206IDVweDtcblxuXHRcdCY6aG92ZXIgLnNoaWtpX2luZm90ZXh0X2xhYmVsX2RpdiwgLnNoaWtpX2luZm90ZXh0X2xhYmVsX2Z1bGxcblx0XHR7XG5cdFx0XHRiYWNrZ3JvdW5kOiB2YXIoLS1idXR0b24tcHJpbWFyeS1iYWNrZ3JvdW5kLWZpbGwtaG92ZXIpO1xuXHRcdFx0Y29sb3I6IHZhcigtLWJ1dHRvbi1wcmltYXJ5LXRleHQtY29sb3IpO1xuXHRcdFx0Ym9yZGVyLWNvbG9yOiB2YXIoLS1idXR0b24tcHJpbWFyeS1ib3JkZXItY29sb3IpO1xuXHRcdH1cblxuXHRcdCY6aG92ZXIgLnNoaWtpX2luZm90ZXh0X3ZhbHVlXG5cdFx0e1xuXHRcdFx0Ym94LXNoYWRvdzogdmFyKC0taW5wdXQtc2hhZG93LWZvY3VzKTtcblx0XHRcdGJvcmRlci1jb2xvcjogdmFyKC0tY29sb3ItYWNjZW50KTtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWwsIC5zaGlraV9pbmZvdGV4dF92YWx1ZVxuXHRcdHtcblx0XHRcdG1hcmdpbjogMHB4IDJweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxfZnVsbCwgLnNoaWtpX2luZm90ZXh0X3ZhbHVlX2Z1bGxcblx0XHR7XG5cdFx0XHR3aWR0aDogMTAwJTtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfdmFsdWVfZnVsbFxuXHRcdHtcblx0XHRcdD4gcHJlXG5cdFx0XHR7XG5cdFx0XHRcdHBhZGRpbmc6IDEwcHggNXB4O1xuXHRcdFx0fVxuXG5cdFx0XHQmLCBwcmUsICNzaGlraV9pbmZvdGV4dF9oaWdobGlnaHRlclxuXHRcdFx0e1xuXHRcdFx0XHR3aGl0ZS1zcGFjZTogcHJlLXdyYXA7XG5cdFx0XHR9XG5cdFx0fVxuXG5cdFx0LnNoaWtpX2luZm90ZXh0X2xhYmVsXG5cdFx0e1xuXHRcdFx0ZmxleDogMSAwIGF1dG87XG5cdFx0XHQvKndoaXRlLXNwYWNlOiBub3dyYXA7Ki9cblx0XHRcdG1pbi13aWR0aDogMzAwcHg7XG5cdFx0fVxuXG5cdFx0LnNoaWtpX2luZm90ZXh0X3ZhbHVlXG5cdFx0e1xuXHRcdFx0ZmxleDogNCAxIGF1dG87XG5cdFx0XHR3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7XG5cdFx0XHRtaW4td2lkdGg6IDA7XG5cdFx0XHRtYXJnaW46IGF1dG8gMnB4O1xuXHRcdFx0Ym9yZGVyOiAxcHggc29saWQgdmFyKC0tYmxvY2stYm9yZGVyLWNvbG9yKTtcblx0XHRcdGJvcmRlci1yYWRpdXM6IDhweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxfZGl2XG5cdFx0e1xuXHRcdFx0Ym9yZGVyLXJhZGl1czogM3B4O1xuXHRcdFx0YmFja2dyb3VuZDogdmFyKC0tYnV0dG9uLXNlY29uZGFyeS1iYWNrZ3JvdW5kLWZpbGwpO1xuXG5cdFx0XHQmLCAuc2hpa2lfaW5mb3RleHRfdmFsdWVfZGl2XG5cdFx0XHR7XG5cdFx0XHRcdHBhZGRpbmc6IDNweCA1cHg7XG5cdFx0XHRcdG1pbi1oZWlnaHQ6IDI0cHg7XG5cdFx0XHR9XG5cblx0XHRcdCZbZGF0YS1rZXk9XCJNb2RlbFwiXSwgJltkYXRhLWtleT1cIlRJIGhhc2hlc1wiXSwgJltkYXRhLWtleT1cIkxvcmEgaGFzaGVzXCJdXG5cdFx0XHR7XG5cdFx0XHRcdGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCh0byBib3R0b20gcmlnaHQsICM4NjAwODcsICM4NjAwODcpO1xuXHRcdFx0fVxuXHRcdH1cblx0fVxufVxuXG4uaW5mb3RleHQgLnBlbmRpbmc6aG92ZXJcbntcblx0b3BhY2l0eTogMTtcbn1cbiJdfQ== */`;
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvc2Qtd2VidWktcG5naW5mby1iZWF1dGlmeS9zZC13ZWJ1aS1wbmdpbmZvLWJlYXV0aWZ5L3NyYyIsInNvdXJjZXMiOlsic3R5bGUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVDO0VBQ0E7RUFDQTs7QUFFQTtFQUVDOztBQUdEO0VBRUM7RUFDQTtFQUNBOztBQVNGO0VBRUM7RUFDQTs7QUFFQTtFQUVDO0VBQ0E7RUFDQTtFQUVBO0VBQ0E7RUFDQTs7O0FBS0Y7RUFFQztFQUNBO0VBQ0E7O0FBRUE7RUFFQztFQUNBO0VBQ0E7O0FBRUE7RUFFQztFQUNBO0VBQ0E7O0FBR0Q7RUFFQztFQUNBOztBQUdEO0VBRUM7O0FBR0Q7RUFFQzs7QUFLQTtFQUVDOztBQUdEO0VBRUM7O0FBSUY7RUFFQztBQUNBO0VBQ0E7O0FBR0Q7RUFFQztFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBR0Q7RUFFQztFQUNBOztBQUVBO0VBRUM7RUFDQTs7QUFHRDtFQUVDOzs7QUFNSjtFQUVDIiwic291cmNlc0NvbnRlbnQiOlsiLnNoaWtpX2luZm90ZXh0X3Jvb3Rcbntcblx0bWF4LWhlaWdodDogNDYuNWVtO1xuXHRvdmVyZmxvdy15OiBhdXRvO1xuXHRtYXJnaW4tYm90dG9tOiAyMHB4ICFpbXBvcnRhbnQ7XG5cblx0JiwgLmluZm90ZXh0LCAjdGFiX3BuZ2luZm8gLmh0bWwtbG9nLnByb3NlLCAjaHRtbF9pbmZvX3hfZXh0cmFzLnByb3NlLCAjaHRtbF9pbmZvX2V4dHJhcy5wcm9zZSwgI2h0bWxfaW5mb19yZXBsYWNlci5wcm9zZVxuXHR7XG5cdFx0dHJhbnNpdGlvbjogLjE1cztcblx0fVxuXG5cdGhyLnNoaWtpX2luZm90ZXh0X2hyXG5cdHtcblx0XHRtYXJnaW46IHZhcigtLXNwYWNpbmctbWQpO1xuXHRcdGJvcmRlci10b3Atc3R5bGU6IGRhc2hlZDtcblx0XHRvcGFjaXR5OiAwLjU7XG5cblx0XHRAYXQtcm9vdCAucHJvc2UgJlxuXHRcdHtcblx0XHRcdEBleHRlbmQgLnNoaWtpX2luZm90ZXh0X2hyO1xuXHRcdH1cblx0fVxufVxuXG4uc2hpa2lfaW5mb3RleHRfc2hvd19oaWRlX2Rpdlxue1xuXHR0ZXh0LWFsaWduOiByaWdodDtcblx0cGFkZGluZzogMTBweDtcblxuXHQuc2hpa2lfaW5mb3RleHRfc2hvd19oaWRlX2J0blxuXHR7XG5cdFx0Ym9yZGVyOiB2YXIoLS1idXR0b24tYm9yZGVyLXdpZHRoKSBzb2xpZCB2YXIoLS1idXR0b24tc2Vjb25kYXJ5LWJvcmRlci1jb2xvcik7XG5cdFx0YmFja2dyb3VuZDogdmFyKC0tYnV0dG9uLXNlY29uZGFyeS1iYWNrZ3JvdW5kLWZpbGwpO1xuXHRcdGNvbG9yOiB2YXIoLS1idXR0b24tc2Vjb25kYXJ5LXRleHQtY29sb3IpO1xuXG5cdFx0cG9zaXRpb246IHN0aWNreTtcblx0XHR0b3A6IDA7XG5cdFx0cmlnaHQ6IDA7XG5cdH1cblxufVxuXG4uc2hpa2lfaW5mb3RleHRfbWFpblxue1xuXHRkaXNwbGF5OiBmbGV4O1xuXHRmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuXHRwYWRkaW5nOiA1cHg7XG5cblx0LnNoaWtpX2luZm90ZXh0X3Jvd1xuXHR7XG5cdFx0ZGlzcGxheTogZmxleDtcblx0XHRmbGV4LXdyYXA6IHdyYXA7XG5cdFx0bWFyZ2luLWJvdHRvbTogNXB4O1xuXG5cdFx0Jjpob3ZlciAuc2hpa2lfaW5mb3RleHRfbGFiZWxfZGl2LCAuc2hpa2lfaW5mb3RleHRfbGFiZWxfZnVsbFxuXHRcdHtcblx0XHRcdGJhY2tncm91bmQ6IHZhcigtLWJ1dHRvbi1wcmltYXJ5LWJhY2tncm91bmQtZmlsbC1ob3Zlcik7XG5cdFx0XHRjb2xvcjogdmFyKC0tYnV0dG9uLXByaW1hcnktdGV4dC1jb2xvcik7XG5cdFx0XHRib3JkZXItY29sb3I6IHZhcigtLWJ1dHRvbi1wcmltYXJ5LWJvcmRlci1jb2xvcik7XG5cdFx0fVxuXG5cdFx0Jjpob3ZlciAuc2hpa2lfaW5mb3RleHRfdmFsdWVcblx0XHR7XG5cdFx0XHRib3gtc2hhZG93OiB2YXIoLS1pbnB1dC1zaGFkb3ctZm9jdXMpO1xuXHRcdFx0Ym9yZGVyLWNvbG9yOiB2YXIoLS1jb2xvci1hY2NlbnQpO1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF9sYWJlbCwgLnNoaWtpX2luZm90ZXh0X3ZhbHVlXG5cdFx0e1xuXHRcdFx0bWFyZ2luOiAwcHggMnB4O1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF9sYWJlbF9mdWxsLCAuc2hpa2lfaW5mb3RleHRfdmFsdWVfZnVsbFxuXHRcdHtcblx0XHRcdHdpZHRoOiAxMDAlO1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF92YWx1ZV9mdWxsXG5cdFx0e1xuXHRcdFx0PiBwcmVcblx0XHRcdHtcblx0XHRcdFx0cGFkZGluZzogMTBweCA1cHg7XG5cdFx0XHR9XG5cblx0XHRcdCYsIHByZSwgI3NoaWtpX2luZm90ZXh0X2hpZ2hsaWdodGVyXG5cdFx0XHR7XG5cdFx0XHRcdHdoaXRlLXNwYWNlOiBwcmUtd3JhcDtcblx0XHRcdH1cblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfbGFiZWxcblx0XHR7XG5cdFx0XHRmbGV4OiAxIDAgYXV0bztcblx0XHRcdC8qd2hpdGUtc3BhY2U6IG5vd3JhcDsqL1xuXHRcdFx0bWluLXdpZHRoOiAzMDBweDtcblx0XHR9XG5cblx0XHQuc2hpa2lfaW5mb3RleHRfdmFsdWVcblx0XHR7XG5cdFx0XHRmbGV4OiA0IDEgYXV0bztcblx0XHRcdHdvcmQtd3JhcDogYnJlYWstd29yZDtcblx0XHRcdG1pbi13aWR0aDogMDtcblx0XHRcdG1hcmdpbjogYXV0byAycHg7XG5cdFx0XHRib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1ibG9jay1ib3JkZXItY29sb3IpO1xuXHRcdFx0Ym9yZGVyLXJhZGl1czogOHB4O1xuXHRcdH1cblxuXHRcdC5zaGlraV9pbmZvdGV4dF9sYWJlbF9kaXZcblx0XHR7XG5cdFx0XHRib3JkZXItcmFkaXVzOiAzcHg7XG5cdFx0XHRiYWNrZ3JvdW5kOiB2YXIoLS1idXR0b24tc2Vjb25kYXJ5LWJhY2tncm91bmQtZmlsbCk7XG5cblx0XHRcdCYsIC5zaGlraV9pbmZvdGV4dF92YWx1ZV9kaXZcblx0XHRcdHtcblx0XHRcdFx0cGFkZGluZzogM3B4IDVweDtcblx0XHRcdFx0bWluLWhlaWdodDogMjRweDtcblx0XHRcdH1cblxuXHRcdFx0JltkYXRhLWtleT1cIk1vZGVsXCJdLCAmW2RhdGEta2V5PVwiVEkgaGFzaGVzXCJdLCAmW2RhdGEta2V5PVwiTG9yYSBoYXNoZXNcIl1cblx0XHRcdHtcblx0XHRcdFx0YmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KHRvIGJvdHRvbSByaWdodCwgIzg2MDA4NywgIzg2MDA4Nyk7XG5cdFx0XHR9XG5cdFx0fVxuXHR9XG59XG5cbi5pbmZvdGV4dCAucGVuZGluZzpob3Zlclxue1xuXHRvcGFjaXR5OiAxO1xufVxuIl19 */`;
 
   // src/style.ts
   function initStyle() {
