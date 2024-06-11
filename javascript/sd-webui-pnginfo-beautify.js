@@ -62,8 +62,8 @@ u
   }(e2 || (e2 = {}));
   var once = (t3) => {
     let e3, r3;
-    return function(...s) {
-      return r3 || (e3 = t3(...s), r3 = !0), e3;
+    return function(...s2) {
+      return r3 || (e3 = t3(...s2), r3 = !0), e3;
     };
   }, isEmpty = (t3) => {
     if (!t3) return !0;
@@ -111,9 +111,9 @@ u
       return isEmpty(this.pipe);
     }
     getMentions(t3, e3) {
-      let r3 = [], s = [];
-      for (let n2 of this.currentMentions) n2.index >= t3 && n2.index < e3 ? r3.push(n2.mention) : s.push(n2);
-      return [r3.length && r3, s];
+      let r3 = [], s2 = [];
+      for (let n2 of this.currentMentions) n2.index >= t3 && n2.index < e3 ? r3.push(n2.mention) : s2.push(n2);
+      return [r3.length && r3, s2];
     }
     trimResultText(t3) {
       return this.searchSettings.trimResult ? t3.trim() : t3;
@@ -122,10 +122,10 @@ u
       return this.searchSettings.trimSeparators ? t3.trim() : t3;
     }
     checkSeparator(t3) {
-      let { string: e3 } = this, { check: r3, includePositions: s, mentions: n2 } = this.searchSettings, { 0: i2 = "", index: a = e3.length, searchWithinData: o } = t3 ?? {}, c = i2.length, h = o ? o.openPosition : this.position, p2 = e3.substring(h, a);
+      let { string: e3 } = this, { check: r3, includePositions: s2, mentions: n2 } = this.searchSettings, { 0: i2 = "", index: a = e3.length, searchWithinData: o } = t3 ?? {}, c = i2.length, h = o ? o.openPosition : this.position, p2 = e3.substring(h, a);
       i2 || (this.isDone = !0), p2 = this.trimResultText(p2), i2 = this.trimSeparatorText(i2);
       let l2, u = o ? [o.open, o.close] : i2;
-      if (s && (p2 = {
+      if (s2 && (p2 = {
         text: p2,
         position: h
       }, u = {
@@ -142,11 +142,11 @@ u
       if (r3 && i2) {
         let t4 = isNaN(this.tempPosition) ? h : this.tempPosition;
         this.tempPosition = a + i2.length;
-        let s2 = this;
+        let s3 = this;
         if (!r3({
-          getString: once(() => s2.trimResultText(e3.substring(t4, a))),
+          getString: once(() => s3.trimResultText(e3.substring(t4, a))),
           getTextAfter: once(() => e3.substring(a + i2.length)),
-          getMentions: once(() => s2.getMentions(t4, a)[0]),
+          getMentions: once(() => s3.getMentions(t4, a)[0]),
           getSeparator: once(() => i2),
           get string() {
             return this.getString();
@@ -173,8 +173,8 @@ u
       this.pipe.push(t3);
     }
     addToPipe(t3) {
-      let [e3, r3, s] = this.checkSeparator(t3);
-      if (!s) return !1;
+      let [e3, r3, s2] = this.checkSeparator(t3);
+      if (!s2) return !1;
       switch (this.searchSettings.includeSeparatorMode) {
         case "SEPARATELY":
           this.pushToPipe(e3), r3 && this.pushToPipe(r3);
@@ -194,7 +194,7 @@ u
       return !this.pipeIsEmpty;
     }
     findBrackets() {
-      let { searchString: t3, brackets: e3, freeArea: r3, searchSettings: s } = this, { bracketsSearch: n2, separatorSearch: i2, searchWithin: a } = s, o = a ? () => this.pipeIsEmpty : () => (typeof r3.start != "number" || r3.start !== r3.end) && !r3.end;
+      let { searchString: t3, brackets: e3, freeArea: r3, searchSettings: s2 } = this, { bracketsSearch: n2, separatorSearch: i2, searchWithin: a } = s2, o = a ? () => this.pipeIsEmpty : () => (typeof r3.start != "number" || r3.start !== r3.end) && !r3.end;
       for (; o(); ) {
         var c;
         let o2 = n2.exec(t3);
@@ -204,7 +204,7 @@ u
           continue;
         }
         let p2 = o2[0], { close: l2, ignoreMode: u, searchLevels: g } = (h = e3)[h.length - 1] || {}, f;
-        switch ((p2 === l2 ? 1 : u && 4) || (f = s.bracketsMap[p2]) && 2 || ((c = s.mentions) === null || c === void 0 ? void 0 : c[p2]) && 3) {
+        switch ((p2 === l2 ? 1 : u && 4) || (f = s2.bracketsMap[p2]) && 2 || ((c = s2.mentions) === null || c === void 0 ? void 0 : c[p2]) && 3) {
           case 1:
             let t4 = e3.pop();
             a ? (g === !0 || g.includes(e3.length + 1)) && this.addToPipe(Object.assign(o2, {
@@ -219,7 +219,7 @@ u
             break;
           case 3:
             this.currentMentions.push({
-              mention: s.mentions[p2],
+              mention: s2.mentions[p2],
               index: o2.index
             });
         }
@@ -228,9 +228,9 @@ u
       return !0;
     }
     findSeparator(t3) {
-      let { searchString: e3, freeArea: r3 } = this, { separatorSearch: s } = this.searchSettings, n2;
+      let { searchString: e3, freeArea: r3 } = this, { separatorSearch: s2 } = this.searchSettings, n2;
       for (; !n2; ) {
-        if (t3 = t3 || s.exec(e3)) if (t3.index <= r3.end) {
+        if (t3 = t3 || s2.exec(e3)) if (t3.index <= r3.end) {
           let e4 = t3.index >= r3.start && this.addToPipe(t3);
           if (t3 = null, !e4) continue;
         } else r3.start = r3.end = void 0;
@@ -261,16 +261,16 @@ u
     }
   };
   function split(t3, e3) {
-    let r3 = this.merge(e3), s = new SearchResults(t3, r3);
-    return typeof r3.indexes == "number" ? s.getNext() : r3.returnIterator ? s : s.getAll();
+    let r3 = this.merge(e3), s2 = new SearchResults(t3, r3);
+    return typeof r3.indexes == "number" ? s2.getNext() : r3.returnIterator ? s2 : s2.getAll();
   }
   function createSplitFunction(t3) {
     let e3 = split.bind(t3);
     return Object.assign(e3, {
-      getOne(t4, r3, s = {}) {
+      getOne(t4, r3, s2 = {}) {
         if (isNaN(r3)) throw new TypeError("second parameter of `getOne` function should be index");
         return e3(t4, {
-          ...s,
+          ...s2,
           indexes: r3
         });
       },
@@ -278,10 +278,10 @@ u
         ...r3,
         indexes: 0
       }),
-      getIndexes(t4, r3, s = {}) {
+      getIndexes(t4, r3, s2 = {}) {
         if (!Array.isArray(r3)) throw new TypeError("second parameter of `getOne` function should be array of indexes");
         return e3(t4, {
-          ...s,
+          ...s2,
           indexes: r3
         });
       },
@@ -356,14 +356,14 @@ u
           return e4 = function(t5, e5) {
             return e5.ignoreInsideQuotes && t5.unshift(["'", , , !0], ['"', , , !0]), t5;
           }(e4, t4), t4.bracketsMap = function(t5, e5) {
-            return t5.reduce((t6, [r3, s2, ...n2]) => {
+            return t5.reduce((t6, [r3, s3, ...n2]) => {
               n2.length !== 1 || e5 || n2.unshift(void 0);
               let [i2 = e5 && 1, a] = n2;
               return typeof i2 == "number" && (i2 = [i2]), t6[r3] = {
                 open: r3,
                 ignoreMode: a,
                 searchLevels: i2,
-                close: s2 || r3
+                close: s3 || r3
               }, t6;
             }, {});
           }(e4, t4.searchWithin), t4;
@@ -395,87 +395,90 @@ u
     };
   }
   function splitSmartly(...t3) {
-    let [e3, r3, s] = getSplitSmartlyArgs(t3), { splitFn: n2 } = _splitSmartlyCore(r3, s);
+    let [e3, r3, s2] = getSplitSmartlyArgs(t3), { splitFn: n2 } = _splitSmartlyCore(r3, s2);
     return e3 !== null ? n2(e3) : n2;
   }
 
   // node_modules/@bluelovers/auto1111-pnginfo/dist/index.esm.mjs
-  function _normalizeInputRaw(n2) {
-    return crlf(n2).replace(/[ \t\xa0]+(?=\n)/g, "").replace(/\n{3,}/g, `
+  function _normalizeInputRaw(e3) {
+    return crlf(e3).replace(/[ \t\xa0]+(?=\n)/g, "").replace(/\n{3,}/g, `
 
 `).replace(/^[\r\n]+|[\s\r\n]+$/g, "");
   }
-  var t2 = /\r?\n/, r2 = /(?:\x00\x00\x00|\u200b\u200b\u200b)\r?\n/;
-  function _splitRawToLines(e3) {
-    return e3.split(_isRawVersionPlus(e3) ? r2 : t2);
+  var r2 = /\r?\n/, t2 = /(?:\x00\x00\x00|\u200b\u200b\u200b)\r?\n/;
+  function _splitRawToLines(n2) {
+    return n2.split(_isRawVersionPlus(n2) ? t2 : r2);
   }
-  function _isRawVersionPlus(e3) {
-    return r2.test(e3);
+  function _isRawVersionPlus(n2) {
+    return t2.test(n2);
   }
-  function _parseLine(e3) {
-    let [, n2, t3] = e3.match(/^([^:]+)\s*:\s*(.*)$/);
-    return [n2, t3];
+  function _parseLine(n2) {
+    let [, e3, r3] = n2.match(/^([^:]+)\s*:\s*(.*)$/);
+    return [e3, r3];
   }
-  function _parseInfoLine(e3) {
-    return e3 = _normalizeInputRaw(e3), splitSmartly(e3, [","], {
+  function* _parseInfoLineGenerator(n2) {
+    n2 = _normalizeInputRaw(n2);
+    let r3 = splitSmartly(n2, [","], {
       brackets: !0,
       trimSeparators: !0
-    }).reduce((e4, n2) => {
-      if (n2 != null && n2.length) {
-        let t3 = _parseLine(n2);
-        e4.push(t3);
-      }
-      return e4;
-    }, []);
+    });
+    for (let n3 of r3) n3 != null && n3.length && (yield _parseLine(n3));
   }
-  function extractPromptAndInfoFromRaw(e3) {
-    let n2 = _isRawVersionPlus(e3 = _normalizeInputRaw(e3)), t3 = _splitRawToLines(e3), r3 = "", o = "", i2 = "", a = t3.slice();
-    if (t3.length) {
-      if (n2) {
-        var s, p2;
-        if (t3.length > 3) throw new TypeError();
-        let e4 = t3.pop();
-        if (e4.startsWith("Steps: ") && (i2 = e4, e4 = void 0), (s = e4) !== null && s !== void 0 || (e4 = t3.pop()), e4.startsWith("Negative prompt: ") && (o = e4.slice(17), e4 = void 0), (p2 = e4) !== null && p2 !== void 0 || (e4 = t3.pop()), r3 = e4, t3.length) throw new TypeError();
+  function extractPromptAndInfoFromRaw(n2) {
+    let e3 = _isRawVersionPlus(n2 = _normalizeInputRaw(n2)), r3 = _splitRawToLines(n2), t3 = "", o = "", i2 = "", a = r3.slice();
+    if (r3.length) {
+      if (e3) {
+        var s2, f;
+        if (r3.length > 3) throw new TypeError();
+        let n3 = r3.pop();
+        if (n3.startsWith("Steps: ") && (i2 = n3, n3 = void 0), (s2 = n3) !== null && s2 !== void 0 || (n3 = r3.pop()), n3.startsWith("Negative prompt: ") && (o = n3.slice(17), n3 = void 0), (f = n3) !== null && f !== void 0 || (n3 = r3.pop()), t3 = n3, r3.length) throw new TypeError();
       } else {
-        let e4 = t3[t3.length - 1];
-        if (e4.startsWith("Steps: ") && (i2 = t3.pop(), e4 = void 0), t3.length) {
-          let n3 = -1;
-          for (let r4 = t3.length - 1; r4 >= 0; r4--) if (e4 = t3[r4], e4.startsWith("Negative prompt: ")) {
-            n3 = r4, t3[r4] = e4.slice(17);
+        let n3 = r3[r3.length - 1];
+        if (n3.startsWith("Steps: ") && (i2 = r3.pop(), n3 = void 0), r3.length) {
+          let e4 = -1;
+          for (let t4 = r3.length - 1; t4 >= 0; t4--) if (n3 = r3[t4], n3.startsWith("Negative prompt: ")) {
+            e4 = t4, r3[t4] = n3.slice(17);
             break;
           }
-          n3 !== -1 && (o = t3.splice(n3).join(`
-`)), r3 = t3.join(`
+          e4 !== -1 && (o = r3.splice(e4).join(`
+`)), t3 = r3.join(`
 `);
         }
       }
-      r3 = r3.replace(/\x00\x00\x00/g, ""), o = o.replace(/\x00\x00\x00/g, "");
+      t3 = t3.replace(/\x00\x00\x00/g, ""), o = o.replace(/\x00\x00\x00/g, "");
     }
     return {
-      prompt: r3,
+      prompt: t3,
       negative_prompt: o,
       infoline: i2,
       infoline_extra: [],
       lines_raw: a
     };
   }
-  function handleInfoEntries(e3, n2) {
-    let t3 = n2?.cast_to_snake, r3 = /^0\d/;
-    return e3.map(([e4, n3]) => {
-      let o = parseFloat(n3), i2 = r3.test(n3) || isNaN(o) || n3 - o != 0;
-      return t3 && (e4 = function(e5) {
-        return e5.toLowerCase().replace(/ /g, "_");
-      }(e4)), [e4, i2 ? n3 : o];
-    });
+  function keyToSnakeStyle1(n2) {
+    return n2.toLowerCase().replace(/ /g, "_");
   }
-  function parseFromRawInfo(e3, n2) {
-    let t3 = [];
-    if (n2 != null && n2.isIncludePrompts) {
-      let { prompt: n3, negative_prompt: r3, infoline: o } = extractPromptAndInfoFromRaw(e3);
-      t3.push(["prompt", n3]), t3.push(["negative_prompt", r3]), e3 = o;
+  function* handleInfoEntriesGenerator(n2, e3) {
+    for (let r3 of n2) yield handleInfoEntry(r3, e3);
+  }
+  function handleInfoEntry(n2, e3) {
+    let r3 = e3?.cast_to_snake, [t3, o] = n2, i2 = parseFloat(o), a = /^0\d/.test(o) || isNaN(i2) || o - i2 != 0;
+    return r3 && (t3 = keyToSnakeStyle1(t3)), [t3, a ? o : i2];
+  }
+  var s;
+  function parseFromRawInfo(n2, e3) {
+    return Object.fromEntries([...parseFromRawInfoGenerator(n2, e3)]);
+  }
+  function* parseFromRawInfoGenerator(n2, e3) {
+    if (e3 != null && e3.isIncludePrompts) {
+      let { prompt: e4, negative_prompt: r3, infoline: t3 } = extractPromptAndInfoFromRaw(n2);
+      yield ["prompt", e4], yield ["negative_prompt", r3], n2 = t3;
     }
-    return Object.fromEntries(t3.concat(handleInfoEntries(_parseInfoLine(e3), n2)));
+    yield* handleInfoEntriesGenerator(_parseInfoLineGenerator(n2), e3);
   }
+  (function(n2) {
+    n2.prompt = "prompt", n2.negative_prompt = "negative_prompt";
+  })(s || (s = {}));
 
   // src/const.ts
   var EXTENSION_NAME = "sd-webui-pnginfo-beautify", CLASS_PREFIX = "shiki_infotext_", tabs = [
@@ -5333,7 +5336,7 @@ u
     theme.tokenColors && !theme.settings && (theme.settings = theme.tokenColors, delete theme.tokenColors), theme.type ||= "dark", theme.colorReplacements = { ...theme.colorReplacements }, theme.settings ||= [];
     let { bg, fg } = theme;
     if (!bg || !fg) {
-      let globalSetting = theme.settings ? theme.settings.find((s) => !s.name && !s.scope) : void 0;
+      let globalSetting = theme.settings ? theme.settings.find((s2) => !s2.name && !s2.scope) : void 0;
       globalSetting?.settings?.foreground && (fg = globalSetting.settings.foreground), globalSetting?.settings?.background && (bg = globalSetting.settings.background), !fg && theme?.colors?.["editor.foreground"] && (fg = theme.colors["editor.foreground"]), !bg && theme?.colors?.["editor.background"] && (bg = theme.colors["editor.background"]), fg || (fg = theme.type === "light" ? VSCODE_FALLBACK_EDITOR_FG.light : VSCODE_FALLBACK_EDITOR_FG.dark), bg || (bg = theme.type === "light" ? VSCODE_FALLBACK_EDITOR_BG.light : VSCODE_FALLBACK_EDITOR_BG.dark), theme.fg = fg, theme.bg = bg;
     }
     theme.settings[0] && theme.settings[0].settings && !theme.settings[0].scope || theme.settings.unshift({
@@ -5515,8 +5518,8 @@ u
       createOnigScanner(patterns) {
         return createOnigScanner(patterns);
       },
-      createOnigString(s) {
-        return createOnigString(s);
+      createOnigString(s2) {
+        return createOnigString(s2);
       }
     }), langs), _registry = new Registry2(resolver, themes, langs, options.langAlias);
     await _registry.init();
@@ -5773,18 +5776,6 @@ u
     }
   }));
   [
-    ///^ControlNet \d+$/
-  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
-    full: !0,
-    decode: !0,
-    syntaxHighlighter: !0,
-    syntaxLang: "json5",
-    formatFn(value, key3) {
-      let map = parseFromRawInfo(value);
-      return JSON.stringify(map);
-    }
-  }));
-  [
     "TI hashes",
     "Lora hashes"
   ].forEach((key2) => RowConfigMap.set(key2, {
@@ -5814,10 +5805,10 @@ u
     return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
   }
   function decodeHashs(input) {
-    let map = parseFromRawInfo(JSON.parse(input)), list = [];
-    return Object.entries(map).forEach(([key2, value]) => {
+    let list = [];
+    for (let [key2, value] of parseFromRawInfoGenerator(JSON.parse(input)))
       list.push(`<div>${_search(key2, "&#x1F50D;")} <span>${key2}</span>: <span>${value}</span> ${_search(value)}</div>`);
-    }), list.join("");
+    return list.join("");
   }
   function mergeMapRegExp() {
     let ls = [];
