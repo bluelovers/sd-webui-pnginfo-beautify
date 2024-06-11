@@ -1,4 +1,4 @@
-import { parseFromRawInfo } from '@bluelovers/auto1111-pnginfo';
+import { parseFromRawInfo, parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
 import { syntaxHighlighter } from './highlighter';
 
@@ -75,6 +75,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	}
 }));
 
+/*
 [
 	///^ControlNet \d+$/
 ].forEach(key => RowConfigMapRegExp.set(key, {
@@ -89,6 +90,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 		return JSON.stringify(map)
 	}
 }));
+ */
 
 [
 	'TI hashes',
@@ -129,15 +131,12 @@ function _search(query: unknown, text = '&#x1F50E;')
 
 function decodeHashs(input: string)
 {
-	let map = parseFromRawInfo(JSON.parse(input));
-
 	const list: string[] = [];
 
-	Object.entries(map)
-		.forEach(([key, value]) => {
-			list.push(`<div>${_search(key, '&#x1F50D;')} <span>${key}</span>: <span>${value}</span> ${_search(value)}</div>`)
-		})
-	;
+	for (const [key, value] of parseFromRawInfoGenerator(JSON.parse(input)))
+	{
+		list.push(`<div>${_search(key, '&#x1F50D;')} <span>${key}</span>: <span>${value}</span> ${_search(value)}</div>`)
+	}
 
 	return list.join('')
 }
