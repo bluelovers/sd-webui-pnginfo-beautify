@@ -502,9 +502,17 @@ u
 
   // src/logger.ts
   function initLogger() {
+    let list = [
+      "log",
+      "error",
+      "debug",
+      "info",
+      "warn"
+      // @ts-ignore
+    ];
     return Object.keys(console).reduce((log, method) => {
       let fn = console[method];
-      return typeof fn == "function" && (log[method] = fn.bind(console, EXTENSION_NAME)), log;
+      return typeof fn == "function" && list.includes(method) && (log[method] = fn.bind(console, EXTENSION_NAME)), log;
     }, {});
   }
   var logger = initLogger();
@@ -5834,7 +5842,16 @@ u
   async function _addRowCore(key2, value, infoData, opts) {
     if (typeof value == "string" && value?.length) {
       let doEscapeHTML = !opts.disableEscapeHTML;
-      opts.decode && (opts.decode === !0 ? value = JSON.parse(value) : value = await opts.decode(value, key2)), opts.formatFn && (value = await opts.formatFn(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await (opts.syntaxHighlighter === !0 ? syntaxHighlighter : opts.syntaxHighlighter)(value, opts, key2)), doEscapeHTML && (value = escapeHTML(value));
+      if (opts.decode)
+        if (opts.decode === !0)
+          try {
+            value = JSON.parse(value);
+          } catch (e3) {
+            logger.error(e3);
+          }
+        else
+          value = await opts.decode(value, key2);
+      opts.formatFn && (value = await opts.formatFn(value, key2)), opts.syntaxHighlighter && (doEscapeHTML = !1, value = await (opts.syntaxHighlighter === !0 ? syntaxHighlighter : opts.syntaxHighlighter)(value, opts, key2)), doEscapeHTML && (value = escapeHTML(value));
     }
     return {
       key: key2,
