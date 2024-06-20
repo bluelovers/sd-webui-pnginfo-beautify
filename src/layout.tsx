@@ -2,6 +2,7 @@ import { CLASS_PREFIX } from './const';
 import { IRowConfigOptions, RowConfigMap, RowConfigMapRegExp, RowConfigMapRegExpCached } from './row-config';
 import { syntaxHighlighter } from './highlighter';
 import { IRecordInfo } from '@bluelovers/auto1111-pnginfo';
+import { logger } from './logger';
 
 export function _addRowCoreOptions(key: string, value: any, infoData: ILayoutInfoData)
 {
@@ -34,7 +35,14 @@ export async function _addRowCore(key: string, value: any, infoData: ILayoutInfo
 		{
 			if (opts.decode === true)
 			{
-				value = JSON.parse(value)
+				try
+				{
+					value = JSON.parse(value)
+				}
+				catch (e)
+				{
+					logger.error(e)
+				}
 			}
 			else
 			{
