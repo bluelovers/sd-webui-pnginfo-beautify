@@ -1,4 +1,4 @@
-import { parseFromRawInfo, parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
+import { parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
 import { syntaxHighlighter } from './highlighter';
 
