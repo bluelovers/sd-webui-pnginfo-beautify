@@ -47,6 +47,7 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 
 - `TI hashes`
 - `Lora hashes`
+- `Hashes` from [PNGINFO Injection](https://github.com/bluelovers/sd-webui-pnginfo-injection) and [Civitai](https://github.com/civitai/sd_civitai_extension)
 
 #### Searchs
 
