@@ -56,7 +56,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	decode: true,
 	async syntaxHighlighter(ls: string[])
 	{
-		ls = await Promise.all(ls.map(value =>
+		ls = await Promise.all([ls].flat().map(value =>
 		{
 			return syntaxHighlighter(value);
 		}))
