@@ -61,7 +61,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 			return syntaxHighlighter(value);
 		}))
 
-		return ls.join('<hr/>');
+		return ls.join('<hr class="shiki_infotext_hr"/>');
 	},
 	syntaxLang: 'json5',
 	formatFn(value, key)
