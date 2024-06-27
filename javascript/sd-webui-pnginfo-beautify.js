@@ -5776,7 +5776,7 @@ u
     full: !0,
     decode: !0,
     async syntaxHighlighter(ls) {
-      return ls = await Promise.all(ls.map((value) => syntaxHighlighter(value))), ls.join("<hr/>");
+      return ls = await Promise.all([ls].flat().map((value) => syntaxHighlighter(value))), ls.join("<hr/>");
     },
     syntaxLang: "json5",
     formatFn(value, key3) {
