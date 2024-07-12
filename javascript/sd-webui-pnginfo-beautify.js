@@ -6074,7 +6074,10 @@ u
 
   // src/index.mts
   typeof onUiLoaded > "u" && (onUiLoaded = (fn) => document.addEventListener("DOMContentLoaded", fn));
-  onUiLoaded(async () => {
+  function onUiLoadedLazy(cb) {
+    return (typeof onUiLoadedReady == "function" && onUiLoadedReady || typeof onUiLoaded == "function" && onUiLoaded || ((cb2) => document.addEventListener("DOMContentLoaded", cb2)))(cb);
+  }
+  onUiLoadedLazy(async () => {
     initStyle();
     let app = gradioApp(), observer = new MutationObserver(async (mutationsList, observer2) => {
       for (let mutation of mutationsList) {
