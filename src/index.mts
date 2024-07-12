@@ -15,7 +15,16 @@ typeof onUiLoaded === 'undefined' && (onUiLoaded = (fn) => {
 	return document.addEventListener('DOMContentLoaded', fn)
 });
 
-onUiLoaded(async () =>
+function onUiLoadedLazy(cb: Function)
+{
+	const fn = typeof onUiLoadedReady === 'function' && onUiLoadedReady || typeof onUiLoaded === 'function' && onUiLoaded || (cb => {
+		return document.addEventListener('DOMContentLoaded', cb as any)
+	});
+
+	return fn(cb)
+}
+
+onUiLoadedLazy(async () =>
 {
 	initStyle();
 	const app = gradioApp();
