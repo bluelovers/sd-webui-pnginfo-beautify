@@ -5763,7 +5763,8 @@ u
   [
     "sv_prompt",
     "Template",
-    "Template Generated"
+    "Template Generated",
+    "Wildcard Prompt"
   ].forEach((key2) => RowConfigMap.set(key2, {
     full: !0,
     syntaxHighlighter: !0,
