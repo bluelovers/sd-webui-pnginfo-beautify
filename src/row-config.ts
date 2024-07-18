@@ -42,6 +42,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	'sv_prompt',
 	'Template',
 	'Template Generated',
+	'Wildcard Prompt',
 ].forEach(key => RowConfigMap.set(key, {
 	full: true,
 	syntaxHighlighter: true,

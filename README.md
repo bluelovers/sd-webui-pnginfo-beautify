@@ -42,6 +42,7 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 - `sv_prompt`
 - `Template` from [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts)
 - `Template Generated` from [Dynamic Prompts](https://github.com/adieyal/sd-dynamic-prompts)
+- `Wildcard Prompt` see [aibooru.online](https://aibooru.online/posts/73504?q=no_nipples+)
 
 #### hashes
 
