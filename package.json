@@ -50,21 +50,21 @@
     "tsc:showConfig": "ynpx get-current-tsconfig -p"
   },
   "dependencies": {
-    "@bluelovers/auto1111-pnginfo": "^2.0.4",
-    "shiki": "^1.6.4"
+    "@bluelovers/auto1111-pnginfo": "^2.0.5",
+    "shiki": "^1.15.2"
   },
   "devDependencies": {
     "@bluelovers/tsconfig": "^1.0.35",
     "@types/bluebird": "^3.5.42",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.14.2",
+    "@types/node": "^22.5.1",
     "bluebird": "^3.7.2",
-    "esbuild": "^0.21.5",
+    "esbuild": "^0.23.1",
     "esbuild-sass-plugin": "^3.3.1",
     "fs-extra": "^11.2.0",
     "stable-diffusion-webui-types": "^1.0.3",
     "tslib": ">=2",
-    "upath2": "^3.1.19"
+    "upath2": "^3.1.20"
   },
   "peerDependencies": {},
   "packageManager": "yarn@1.22.19"

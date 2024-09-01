@@ -1,12 +1,14 @@
 /**
  * Created by user on 2024/5/17.
  */
-import { getHighlighterCore, HighlighterCore } from 'shiki/core';
+import { createHighlighterCore, HighlighterCore } from 'shiki/core';
 import { prompt } from './grammar';
 import getWasm from 'shiki/wasm';
 import { ThemeInput } from 'shiki';
 import { IRowConfigOptions } from './row-config';
 import { ThemeRegistrationRaw } from '@shikijs/core';
+
+const colorBackground = '#1e1e1e';
 
 const theme_config_other_name = 'material-theme' satisfies IRowConfigOptions["syntaxTheme"]
 export const other_syntax_lang = 'javascript' satisfies IRowConfigOptions["syntaxLang"]
@@ -22,10 +24,10 @@ export async function initHighlighter(): Promise<HighlighterCore>
 	/**
 	 * @see https://shiki.matsu.io/guide/install#fine-grained-bundle
 	 */
-	highlighter = await getHighlighterCore({
+	highlighter = await createHighlighterCore({
 		langs: [
 			prompt,
-			() => import('shiki/langs/json5.mjs'),
+			//() => import('shiki/langs/json5.mjs'),
 			() => import('shiki/langs/javascript.mjs'),
 		],
 		themes: [
@@ -131,7 +133,23 @@ async function themeConfigOther()
 	base = {
 		...base,
 		name: theme_config_other_name,
-		bg: '#1e1e1e',
+		bg: colorBackground,
+		colors: {
+			...base.colors,
+			"editor.background": colorBackground,
+		},
+		tokenColors: [
+			{
+				"settings": {
+					"background": colorBackground,
+					"foreground": "#EEFFFF"
+				}
+			},
+			...base.tokenColors.slice(1),
+		],
+		colorReplacements: {
+			'#263238': colorBackground
+		}
 	}
 
 	return base
@@ -159,9 +177,6 @@ export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = 
 					node.properties['id'] = 'shiki_infotext_highlighter';
 				},
 			},
-		],
-		colorReplacements: {
-			'#263238': '#1e1e1e'
-		}
+		]
 	})
 }
