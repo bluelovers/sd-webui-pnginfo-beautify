@@ -55,6 +55,10 @@ export const lang = {
       match: '__.*__',
       name: 'wildcards',
     },
+    {
+      match: '#.*?$',
+      name: 'comment',
+    },
   ],
 
   scopeName: 'source.prompt',

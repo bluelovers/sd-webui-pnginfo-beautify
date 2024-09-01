@@ -103,6 +103,12 @@ function themeConfig(isDarkMode: boolean)
 					foreground: colorYellow,
 				},
 			},
+			{
+				scope: 'comment',
+				settings: {
+					"foreground": "#6a737d"
+				},
+			},
 		],
 		type,
 	} satisfies ThemeInput;
