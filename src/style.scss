@@ -75,6 +75,28 @@
 			width: 100%;
 		}
 
+		.shiki_infotext_value
+		{
+			> #shiki_infotext_highlighter
+			{
+				padding: 5px;
+			}
+
+			#shiki_infotext_highlighter, #lobe_highlighter
+			{
+				white-space: pre-wrap;
+				border-radius: 8px;
+				margin: auto;
+			}
+
+			padding-left: 5px;
+
+			&:has(> pre)
+			{
+				padding-left: 0;
+			}
+		}
+
 		.shiki_infotext_value_full
 		{
 			> pre
@@ -82,7 +104,7 @@
 				padding: 10px 5px;
 			}
 
-			&, pre, #shiki_infotext_highlighter
+			&, pre, #shiki_infotext_highlighter, #lobe_highlighter
 			{
 				white-space: pre-wrap;
 			}
@@ -116,7 +138,7 @@
 				min-height: 24px;
 			}
 
-			&[data-key="Model"], &[data-key="TI hashes"], &[data-key="Lora hashes"], &[data-key="Hashes"]
+			&[data-key="Model"], &[data-key="TI hashes"], &[data-key="Lora hashes"], &[data-key="Hashes"], &[data-key="Civitai resources"]
 			{
 				background: linear-gradient(to bottom right, #860087, #860087);
 			}

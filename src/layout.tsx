@@ -84,7 +84,7 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 
 	let html = `<div class="${CLASS_PREFIX}row">`;
 	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}</div>`;
-	html += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep">${value}</div>`;
+	html += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep" data-syntaxLang="${opts.syntaxLang}">${value}</div>`;
 	html += `</div>`;
 	return html;
 }

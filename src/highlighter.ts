@@ -6,6 +6,10 @@ import { prompt } from './grammar';
 import getWasm from 'shiki/wasm';
 import { ThemeInput } from 'shiki';
 import { IRowConfigOptions } from './row-config';
+import { ThemeRegistrationRaw } from '@shikijs/core';
+
+const theme_config_other_name = 'material-theme' satisfies IRowConfigOptions["syntaxTheme"]
+export const other_syntax_lang = 'javascript' satisfies IRowConfigOptions["syntaxLang"]
 
 let cacheHighlighter: HighlighterCore;
 
@@ -22,8 +26,13 @@ export async function initHighlighter(): Promise<HighlighterCore>
 		langs: [
 			prompt,
 			() => import('shiki/langs/json5.mjs'),
+			() => import('shiki/langs/javascript.mjs'),
 		],
-		themes: [themeConfig(true), themeConfig(false)],
+		themes: [
+			themeConfig(true),
+			themeConfig(false),
+			() => themeConfigOther(),
+		],
 		loadWasm: getWasm,
 	});
 
@@ -114,12 +123,30 @@ function themeConfig(isDarkMode: boolean)
 	} satisfies ThemeInput;
 }
 
+async function themeConfigOther()
+{
+	// @ts-ignore
+	let base: ThemeRegistrationRaw = await import('shiki/themes/material-theme.mjs').then(m => m.default ?? m);
+
+	base = {
+		...base,
+		name: theme_config_other_name,
+		bg: '#1e1e1e',
+	}
+
+	return base
+}
+
 export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = {}, key?: string)
 {
 	const highlighter = await initHighlighter();
+
+	const lang = opts.syntaxLang ?? 'prompt' satisfies IRowConfigOptions["syntaxLang"];
+	const theme = opts.syntaxTheme ?? lang === 'prompt' ? 'dark' : theme_config_other_name satisfies IRowConfigOptions["syntaxTheme"];
+
 	return highlighter.codeToHtml(code, {
-		lang: opts.syntaxLang ?? 'prompt',
-		theme: opts.syntaxTheme ?? 'dark',
+		lang,
+		theme,
 		mergeWhitespaces: true,
 		transformers: [
 			{
@@ -133,5 +160,8 @@ export async function syntaxHighlighter(code: string, opts: IRowConfigOptions = 
 				},
 			},
 		],
+		colorReplacements: {
+			'#263238': '#1e1e1e'
+		}
 	})
 }

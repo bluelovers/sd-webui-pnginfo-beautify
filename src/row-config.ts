@@ -1,6 +1,6 @@
 import { parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
-import { syntaxHighlighter } from './highlighter';
+import { other_syntax_lang, syntaxHighlighter } from './highlighter';
 
 type IDecodeFn = (value: string, key: string) => string | PromiseLike<string>
 
@@ -18,8 +18,8 @@ export interface IRowConfigOptions
 	full?: boolean,
 
 	syntaxHighlighter?: boolean | ISyntaxHighlighterFn,
-	syntaxLang?: string,
-	syntaxTheme?: 'github-dark' | 'dark',
+	syntaxLang?: 'prompt' | 'json5' | 'javascript',
+	syntaxTheme?: 'dark' | 'dracula' | 'material-theme',
 
 	formatFn?: IDecodeFn,
 
@@ -64,7 +64,6 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 
 		return ls.join('<hr class="shiki_infotext_hr"/>');
 	},
-	syntaxLang: 'json5',
 	formatFn(value, key)
 	{
 		if (key === 'Template Generated Grid')
@@ -117,6 +116,21 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 ].forEach(key => RowConfigMapRegExp.set(key, {
 	decode: simpleSearch,
 	disableEscapeHTML: true,
+}));
+
+[
+	'Hashes',
+	'Civitai resources',
+	'Civitai metadata',
+	'Dynamic Prompts',
+].forEach(key => RowConfigMap.set(key, {
+	decode: true,
+	syntaxHighlighter: true,
+	syntaxLang: other_syntax_lang,
+	formatFn(value, key)
+	{
+		return JSON.stringify(value)
+	}
 }));
 
 function simpleSearch(value: string)
