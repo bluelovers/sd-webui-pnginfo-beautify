@@ -49,6 +49,7 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 - `TI hashes`
 - `Lora hashes`
 - `Hashes` from [PNGINFO Injection](https://github.com/bluelovers/sd-webui-pnginfo-injection) and [Civitai](https://github.com/civitai/sd_civitai_extension)
+- `Civitai resources` [ComfyUI outputs into Civitai](https://civitai.com/models/705309/metadata-editor?modelVersionId=792189), [Metadata editor](https://civitai.com/models/705309/metadata-editor?modelVersionId=792189)
 
 #### Searchs
 
