@@ -40,6 +40,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 
 [
 	'sv_prompt',
+	'sv_negative',
 	'Template',
 	'Template Generated',
 	'Wildcard Prompt',
