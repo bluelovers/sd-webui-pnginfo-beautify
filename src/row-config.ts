@@ -123,6 +123,16 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	'Hashes',
 	'Civitai resources',
 	'Civitai metadata',
+].forEach(key => RowConfigMap.set(key, {
+	decode: true,
+	disableEscapeHTML: true,
+	formatFn(value, key)
+	{
+		return _decodeHashsCore(Object.entries(value))
+	}
+}));
+
+[
 	'Dynamic Prompts',
 ].forEach(key => RowConfigMap.set(key, {
 	decode: true,
@@ -147,11 +157,16 @@ function _search(query: unknown, text = '&#x1F50E;')
 
 function decodeHashs(input: string)
 {
+	return _decodeHashsCore(parseFromRawInfoGenerator(JSON.parse(input)))
+}
+
+function _decodeHashsCore(input: [string, string][] | Generator<any>)
+{
 	const list: string[] = [];
 
-	for (const [key, value] of parseFromRawInfoGenerator(JSON.parse(input)))
+	for (const [key, value] of input)
 	{
-		list.push(`<div>${_search(key, '&#x1F50D;')} <span>${key}</span>: <span>${value}</span> ${_search(value)}</div>`)
+		list.push(`<div>${_search(key, '&#x1F50D;')} <span style="color:#C3E88D">${key}</span>: <span style="color:#FF9CAC">${value}</span> ${_search(value)}</div>`)
 	}
 
 	return list.join('')
