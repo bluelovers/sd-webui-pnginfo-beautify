@@ -6165,11 +6165,6 @@
         name: "break"
       },
       {
-        // <ppp:stn position>content<ppp:/stn>
-        match: "<\\w+:[^<>]+>",
-        name: "model-bracket"
-      },
-      {
         captures: {
           0: {
             name: "model-bracket"
@@ -6184,7 +6179,12 @@
             name: "number"
           }
         },
-        match: "<([^:]+):([^:]+):([^>]+)>"
+        match: "<([^:<>]+):([^:<>]+):([^<>]+)>"
+      },
+      {
+        // <ppp:stn position>content<ppp:/stn>
+        match: "<\\w+:[^<>]+>",
+        name: "model-bracket"
       },
       {
         match: "[<|>]",
