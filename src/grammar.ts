@@ -19,6 +19,11 @@ export const lang = {
       name: 'break',
     },
     {
+      // <ppp:stn position>content<ppp:/stn>
+      match: '<\\w+:[^<>]+>',
+      name: 'model-bracket',
+    },
+    {
       captures: {
         0: {
           name: 'model-bracket',
