@@ -65,6 +65,13 @@ see https://github.com/bluelovers/sd-webui-pnginfo-beautify/blob/dev/src/row-con
 
 ![Template Generated Grid.png](docs/Template%20Generated%20Grid.png)
 
+#### sd-webui-prompt-postprocessor
+
+- `PPP original prompts`
+- `PPP original negative prompts`
+
+![PPP original prompts.png](docs/PPP%20original%20prompts.png)
+
 ### Others
 
 - Show/Hide Original pnginfo
