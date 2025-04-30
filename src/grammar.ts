@@ -36,9 +36,16 @@ export const lang = {
       match: '<([^:<>]+):([^:<>]+):([^<>]+)>',
     },
     {
+      captures: {
+        0: {
+          name: 'model-bracket',
+        },
+        1: {
+          name: 'model-type',
+        },
+      },
       // <ppp:stn position>content<ppp:/stn>
-      match: '<\\w+:[^<>]+>',
-      name: 'model-bracket',
+      match: '<(\\w+):([^<>]+)>',
     },
     {
       match: '[<|>]',
