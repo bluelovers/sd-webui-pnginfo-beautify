@@ -52,6 +52,8 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 
 [
 	'Template Generated Grid',
+	'PPP original prompts',
+	'PPP original negative prompts',
 	//'Dynamic Prompts',
 ].forEach(key => RowConfigMap.set(key, {
 	full: true,
