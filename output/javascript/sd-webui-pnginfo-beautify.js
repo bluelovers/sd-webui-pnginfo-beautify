@@ -6367,7 +6367,9 @@
     decode: !0
   }));
   [
-    "Template Generated Grid"
+    "Template Generated Grid",
+    "PPP original prompts",
+    "PPP original negative prompts"
     //'Dynamic Prompts',
   ].forEach((key2) => RowConfigMap.set(key2, {
     full: !0,
