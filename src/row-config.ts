@@ -51,6 +51,13 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 }));
 
 [
+	/^ADetailer (?:negative )?prompt(?: \w+)?$/,
+].forEach(key => _addToRowConfig(key, {
+	syntaxHighlighter: true,
+	decode: true,
+}));
+
+[
 	'Template Generated Grid',
 	'PPP original prompts',
 	'PPP original negative prompts',
@@ -184,6 +191,12 @@ function mergeMapRegExp()
 	const re = ls.length ? new RegExp(ls.join('|')) : null;
 	logger.debug('RowConfigMapRegExpCached', re);
 	return re
+}
+
+function _addToRowConfig(key: string | RegExp, options: IRowConfigOptions)
+{
+	const map = key instanceof RegExp ? RowConfigMapRegExp : RowConfigMap;
+	map.set(key as any, options);
 }
 
 export const RowConfigMapRegExpCached = mergeMapRegExp();
