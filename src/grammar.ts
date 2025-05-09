@@ -19,6 +19,10 @@ export const lang = {
       name: 'break',
     },
     {
+      match: '\\[PROMPT\\]',
+      name: 'model-keyword',
+    },
+    {
       captures: {
         0: {
           name: 'model-bracket',

@@ -66,7 +66,7 @@ function themeConfig(isDarkMode: boolean)
 				},
 			},
 			{
-				scope: ['and', 'break'],
+				scope: ['and', 'break', 'model-keyword'],
 				settings: {
 					foreground: colorBlue,
 				},
