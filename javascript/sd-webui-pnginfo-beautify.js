@@ -6165,6 +6165,10 @@
         name: "break"
       },
       {
+        match: "\\[PROMPT\\]",
+        name: "model-keyword"
+      },
+      {
         captures: {
           0: {
             name: "model-bracket"
@@ -6257,7 +6261,7 @@
           }
         },
         {
-          scope: ["and", "break"],
+          scope: ["and", "break", "model-keyword"],
           settings: {
             foreground: colorBlue
           }
@@ -6379,6 +6383,12 @@
     decode: !0
   }));
   [
+    /^ADetailer (?:negative )?prompt(?: \w+)?$/
+  ].forEach((key2) => _addToRowConfig(key2, {
+    syntaxHighlighter: !0,
+    decode: !0
+  }));
+  [
     "Template Generated Grid",
     "PPP original prompts",
     "PPP original negative prompts"
@@ -6458,6 +6468,9 @@
       ls.push(re3.source);
     let re2 = ls.length ? new RegExp(ls.join("|")) : null;
     return logger.debug("RowConfigMapRegExpCached", re2), re2;
+  }
+  function _addToRowConfig(key2, options) {
+    (key2 instanceof RegExp ? RowConfigMapRegExp : RowConfigMap).set(key2, options);
   }
   var RowConfigMapRegExpCached = mergeMapRegExp();
 
