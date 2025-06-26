@@ -6404,6 +6404,18 @@
     }
   }));
   [
+    /^ControlNet \d+$/
+  ].forEach((key2) => RowConfigMapRegExp.set(key2, {
+    full: !0,
+    decode: !0,
+    syntaxHighlighter: !0,
+    syntaxLang: other_syntax_lang,
+    formatFn(value, key3) {
+      let map = parseFromRawInfo(value);
+      return JSON.stringify(map);
+    }
+  }));
+  [
     "TI hashes",
     "Lora hashes"
   ].forEach((key2) => RowConfigMap.set(key2, {
@@ -6506,9 +6518,18 @@
       opts
     };
   }
-  async function addRow(key2, value, infoData) {
+  async function _addRowCoreAndOptions(key2, value, infoData) {
     let opts = _addRowCoreOptions(key2, value, infoData);
-    ({ key: key2, value } = await _addRowCore(key2, value, infoData, opts));
+    return { key: key2, value } = await _addRowCore(key2, value, infoData, opts), {
+      key: key2,
+      value,
+      opts,
+      infoData
+    };
+  }
+  async function addRow(key2, value, infoData) {
+    let opts;
+    ({ key: key2, value, opts } = await _addRowCoreAndOptions(key2, value, infoData));
     let sx = opts.full ? "_full" : "", html5 = `<div class="${CLASS_PREFIX}row">`;
     return html5 += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key2)}">${key2}</div>`, html5 += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep" data-syntaxLang="${opts.syntaxLang}">${value}</div>`, html5 += "</div>", html5;
   }
