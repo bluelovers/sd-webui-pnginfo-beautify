@@ -38,7 +38,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [ 22.4.1 ]
+        node-version: [ 22 ]
     
     steps:
       - uses: actions/checkout@main
@@ -73,7 +73,7 @@ jobs:
           git config --local user.name "GitHub Action"
       - name: install deps
         run: |
-          yarn install --frozen-lockfile
+          yarn install --frozen-lockfile --ignore-engines
           yarn run ci:install
 #          yarn add -W typescript@next jest ts-jest ts-node ynpx lerna
       - name: run script
