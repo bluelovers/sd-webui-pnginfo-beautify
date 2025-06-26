@@ -75,10 +75,24 @@ export async function _addRowCore(key: string, value: any, infoData: ILayoutInfo
 	}
 }
 
-async function addRow(key: string, value: any, infoData: ILayoutInfoData)
+
+export async function _addRowCoreAndOptions(key: string, value: any, infoData?: ILayoutInfoData) 
 {
 	const opts = _addRowCoreOptions(key, value, infoData);
-	({ key, value} = await _addRowCore(key, value, infoData, opts));
+	({ key, value } = await _addRowCore(key, value, infoData, opts));
+
+	return {
+		key,
+		value,
+		opts,
+		infoData,
+	}
+}
+
+export async function addRow(key: string, value: any, infoData: ILayoutInfoData)
+{
+	let opts: IRowConfigOptions;
+	({ key, value, opts } = await _addRowCoreAndOptions(key, value, infoData));
 
 	const sx = opts.full ? '_full' : '';
 
@@ -89,7 +103,7 @@ async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 	return html;
 }
 
-function escapeHTML(html: string)
+export function escapeHTML(html: string)
 {
 	return html.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 }
@@ -121,7 +135,7 @@ export function switchBtn(elem: HTMLDivElement)
 	return div
 }
 
-interface ILayoutInfoData
+export interface ILayoutInfoData
 {
 	prompt: string;
 	negative_prompt: string;
