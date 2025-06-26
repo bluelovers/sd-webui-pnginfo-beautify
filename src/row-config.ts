@@ -1,4 +1,4 @@
-import { parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
+import { parseFromRawInfo, parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
 import { other_syntax_lang, syntaxHighlighter } from './highlighter';
 
@@ -85,14 +85,13 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	}
 }));
 
-/*
 [
-	///^ControlNet \d+$/
+	/^ControlNet \d+$/
 ].forEach(key => RowConfigMapRegExp.set(key, {
 	full: true,
 	decode: true,
 	syntaxHighlighter: true,
-	syntaxLang: 'json5',
+	syntaxLang: other_syntax_lang,
 	formatFn(value, key)
 	{
 		let map = parseFromRawInfo(value);
@@ -100,7 +99,6 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 		return JSON.stringify(map)
 	}
 }));
- */
 
 [
 	'TI hashes',
