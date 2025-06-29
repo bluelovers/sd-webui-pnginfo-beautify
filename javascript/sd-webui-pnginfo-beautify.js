@@ -6450,7 +6450,9 @@
     }
   }));
   [
-    "Dynamic Prompts"
+    "Dynamic Prompts",
+    "Template Seeds",
+    "Template Seeds Sub"
   ].forEach((key2) => RowConfigMap.set(key2, {
     decode: !0,
     syntaxHighlighter: !0,
