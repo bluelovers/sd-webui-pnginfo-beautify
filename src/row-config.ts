@@ -141,6 +141,8 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 
 [
 	'Dynamic Prompts',
+	'Template Seeds',
+	'Template Seeds Sub',
 ].forEach(key => RowConfigMap.set(key, {
 	decode: true,
 	syntaxHighlighter: true,
