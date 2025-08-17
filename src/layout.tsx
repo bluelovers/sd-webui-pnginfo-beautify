@@ -27,6 +27,8 @@ export function _addRowCoreOptions(key: string, value: any, infoData: ILayoutInf
 
 export async function _addRowCore(key: string, value: any, infoData: ILayoutInfoData, opts: IRowConfigOptions)
 {
+	let btns: string;
+
 	if (typeof value === 'string' && value?.length)
 	{
 		let doEscapeHTML = !opts.disableEscapeHTML;
@@ -66,38 +68,48 @@ export async function _addRowCore(key: string, value: any, infoData: ILayoutInfo
 		{
 			value = escapeHTML(value);
 		}
+
+		if (opts.btnFn)
+		{
+			btns = await opts.btnFn(value, opts, key);
+		}
 	}
 
 	return {
 		key,
 		value,
 		opts,
+		btns,
 	}
 }
 
 
 export async function _addRowCoreAndOptions(key: string, value: any, infoData?: ILayoutInfoData) 
 {
+	let btns: string;
+
 	const opts = _addRowCoreOptions(key, value, infoData);
-	({ key, value } = await _addRowCore(key, value, infoData, opts));
+	({ key, value, btns } = await _addRowCore(key, value, infoData, opts));
 
 	return {
 		key,
 		value,
 		opts,
 		infoData,
+		btns,
 	}
 }
 
 export async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 {
 	let opts: IRowConfigOptions;
-	({ key, value, opts } = await _addRowCoreAndOptions(key, value, infoData));
+	let btns: string;
+	({ key, value, opts, btns } = await _addRowCoreAndOptions(key, value, infoData));
 
 	const sx = opts.full ? '_full' : '';
 
 	let html = `<div class="${CLASS_PREFIX}row">`;
-	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}</div>`;
+	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}<div class="${CLASS_PREFIX}btn_div bilingual__trans_ignore_deep">${btns ?? ''}</div></div>`;
 	html += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep" data-syntaxLang="${opts.syntaxLang}">${value}</div>`;
 	html += `</div>`;
 	return html;

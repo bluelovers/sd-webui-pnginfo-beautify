@@ -3,6 +3,7 @@ import { renderLayout, switchBtn } from './layout';
 import { CLASS_PREFIX, EXTENSION_NAME, tabs } from './const';
 import { IOptionsInfoparser } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
+import { pb_setPromptInput } from './send-to';
 
 export async function renderInfo(
 	parentId: Extract<typeof tabs[number], string> | HTMLDivElement,
@@ -103,6 +104,21 @@ export async function renderInfo(
 			target,
 			btn,
 		})
+
+		target.addEventListener('click', function (e) {
+			const clickedElement = e.target as HTMLElement;
+			if (clickedElement.matches(`.${CLASS_PREFIX}send2prompts`)) {
+				const row = clickedElement.closest(`.${CLASS_PREFIX}row`);
+				if (row) 
+					{
+					const valueElement = row.querySelector(`.${CLASS_PREFIX}value_full, .${CLASS_PREFIX}value`);
+					if (valueElement) {
+						pb_setPromptInput(valueElement.textContent);
+					}
+				}
+				return;
+			}
+		});
 	}
 	else
 	{

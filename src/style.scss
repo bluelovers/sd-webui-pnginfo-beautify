@@ -132,6 +132,8 @@
 			border-radius: 3px;
 			background: var(--button-secondary-background-fill);
 
+			align-content: center;
+
 			&, .shiki_infotext_value_div
 			{
 				padding: 3px 5px;
@@ -142,6 +144,12 @@
 			{
 				background: linear-gradient(to bottom right, #860087, #860087);
 			}
+		}
+
+		.shiki_infotext_btn_div
+		{
+			float: right;
+			display: inline-block;
 		}
 	}
 }

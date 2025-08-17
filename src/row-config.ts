@@ -1,6 +1,7 @@
 import { parseFromRawInfo, parseFromRawInfoGenerator } from '@bluelovers/auto1111-pnginfo';
 import { logger } from './logger';
 import { other_syntax_lang, syntaxHighlighter } from './highlighter';
+import { CLASS_PREFIX } from './const';
 
 type IDecodeFn = (value: string, key: string) => string | PromiseLike<string>
 
@@ -25,6 +26,8 @@ export interface IRowConfigOptions
 
 	decode?: boolean | IDecodeFn,
 	disableEscapeHTML?: boolean,
+
+	btnFn?: ISyntaxHighlighterFn,
 }
 
 export const RowConfigMap = new Map<string, IRowConfigOptions>();
@@ -48,6 +51,11 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	full: true,
 	syntaxHighlighter: true,
 	decode: true,
+
+	btnFn(value, opts, key)
+	{
+		return `<button class="${CLASS_PREFIX}send2prompts lg secondary gradio-button" title="send2prompts">📃</button>`
+	},
 }));
 
 [
