@@ -6630,6 +6630,7 @@
     return `<span>${value}</span> ${_search(value)}`;
   }
   function _search(query, text2 = "&#x1F50E;", is_hash) {
+    text2 ??= "&#x1F50E;";
     let html5 = `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
     return is_hash && (html5 += ` <a href="https://civitai.com/api/v1/model-versions/by-hash/${query}" target="_blank">${text2}</a>`), html5;
   }
@@ -6639,7 +6640,7 @@
   function _decodeHashsCore(input) {
     let list = [];
     for (let [key2, value] of input)
-      list.push(`<div>${_search(key2, "&#x1F50D;")} <span style="color:#C3E88D">${key2}</span>: <span style="color:#FF9CAC">${value}</span> ${_search(value)}</div>`);
+      list.push(`<div>${_search(key2, "&#x1F50D;")} <span style="color:#C3E88D">${key2}</span>: <span style="color:#FF9CAC">${value}</span> ${_search(value, null, !0)}</div>`);
     return list.join("");
   }
   function mergeMapRegExp() {
