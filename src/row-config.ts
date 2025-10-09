@@ -138,6 +138,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 	'Hashes',
 	'Civitai resources',
 	'Civitai metadata',
+	'Dynamic Prompts Hashes',
 ].forEach(key => RowConfigMap.set(key, {
 	decode: true,
 	disableEscapeHTML: true,
