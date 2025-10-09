@@ -7,6 +7,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+### ✨　Features
+
+* **row-config:** 添加 `Dynamic Prompts Hashes` 到配置映射 ([e93cbb0](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/e93cbb03934449dccdcfdd213b17324cdc596884))
+
+
+### 🛠　Build System
+
+* update build ([885e577](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/885e577f2118b6be2df93fc7467f1338866367f7))
+
+
+### ♻️　Chores
+
+* **release:** publish ([9c91eae](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/9c91eae182aa1bb58fdf1ae19e6e66a65d5bdc33))
+
+
+
+# 1.0.0 (2025-10-09)
+
+
+
 ### 🔖　Miscellaneous
 
 * . ([c1422cc](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/c1422cc36d169fb2e77c7f29463a90c64b230303))
