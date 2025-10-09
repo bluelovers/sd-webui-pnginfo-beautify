@@ -167,10 +167,17 @@ function simpleSearch(value: string)
 	return `<span>${value}</span> ${_search(value)}`
 }
 
-function _search(query: unknown, text = '&#x1F50E;')
+function _search(query: unknown, text = '&#x1F50E;', is_hash?: boolean)
 {
 	const href = `https://civitai.com/search/models?sortBy=models_v9&query=${query}`;
-	return `<a href="${href}" target="_blank">${text}</a>`
+	let html = `<a href="${href}" target="_blank">${text}</a>`;
+
+	if (is_hash)
+	{
+		html += ` <a href="https://civitai.com/api/v1/model-versions/by-hash/${query}" target="_blank">${text}</a>`;
+	}
+
+	return html
 }
 
 function decodeHashs(input: string)
