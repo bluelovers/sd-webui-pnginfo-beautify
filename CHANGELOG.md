@@ -6,6 +6,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 # 1.0.0 (2025-10-09)
 
 
+
+### 🛠　Build System
+
+* update build ([317439e](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/317439e9e4ca5014358df94906006650a946ed90))
+* update build ([82df96f](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/82df96f2987e185263da45b42b319462380d1968))
+
+
+### ♻️　Chores
+
+* **release:** publish ([4041347](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/4041347fdf7aaa29c0afdaab33a572e9fba6cef8))
+
+
+
+# 1.0.0 (2025-10-09)
+
+
 ### BREAKING CHANGES
 
 * update api
