@@ -169,6 +169,8 @@ function simpleSearch(value: string)
 
 function _search(query: unknown, text = '&#x1F50E;', is_hash?: boolean)
 {
+	text ??= '&#x1F50E;'
+
 	const href = `https://civitai.com/search/models?sortBy=models_v9&query=${query}`;
 	let html = `<a href="${href}" target="_blank">${text}</a>`;
 
@@ -191,7 +193,7 @@ function _decodeHashsCore(input: [string, string][] | Generator<any>)
 
 	for (const [key, value] of input)
 	{
-		list.push(`<div>${_search(key, '&#x1F50D;')} <span style="color:#C3E88D">${key}</span>: <span style="color:#FF9CAC">${value}</span> ${_search(value)}</div>`)
+		list.push(`<div>${_search(key, '&#x1F50D;')} <span style="color:#C3E88D">${key}</span>: <span style="color:#FF9CAC">${value}</span> ${_search(value, null, true)}</div>`)
 	}
 
 	return list.join('')
