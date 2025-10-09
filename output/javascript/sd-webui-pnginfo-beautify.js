@@ -6605,7 +6605,8 @@
   [
     "Hashes",
     "Civitai resources",
-    "Civitai metadata"
+    "Civitai metadata",
+    "Dynamic Prompts Hashes"
   ].forEach((key2) => RowConfigMap.set(key2, {
     decode: !0,
     disableEscapeHTML: !0,
