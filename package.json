@@ -51,7 +51,16 @@
   },
   "dependencies": {
     "@bluelovers/auto1111-pnginfo": "^2.0.6",
-    "shiki": "^1.29.2"
+    "@bluelovers/jest-config": "^1.1.11",
+    "jest": "^30.2.0",
+    "lerna": "6",
+    "shiki": "^1.29.2",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^6.0.0-dev.20251009",
+    "yarn-tool": "^2.1.6",
+    "ynpx": "^2.1.6"
   },
   "devDependencies": {
     "@bluelovers/tsconfig": "^1.0.35",
