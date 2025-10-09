@@ -6629,8 +6629,9 @@
   function simpleSearch(value) {
     return `<span>${value}</span> ${_search(value)}`;
   }
-  function _search(query, text2 = "&#x1F50E;") {
-    return `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
+  function _search(query, text2 = "&#x1F50E;", is_hash) {
+    let html5 = `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
+    return is_hash && (html5 += ` <a href="https://civitai.com/api/v1/model-versions/by-hash/${query}" target="_blank">${text2}</a>`), html5;
   }
   function decodeHashs(input) {
     return _decodeHashsCore(parseFromRawInfoGenerator(JSON.parse(input)));
