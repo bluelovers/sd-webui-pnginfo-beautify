@@ -112,9 +112,9 @@
 
 		.shiki_infotext_label
 		{
-			flex: 1 0 auto;
-			/*white-space: nowrap;*/
-			min-width: 300px;
+			flex: 0 0 25%;
+			min-width: 0;
+			word-break: break-word;
 		}
 
 		.shiki_infotext_value
@@ -133,6 +133,11 @@
 			background: var(--button-secondary-background-fill);
 
 			align-content: center;
+			padding: 3px 5px;
+			min-height: 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 
 			&, .shiki_infotext_value_div
 			{
@@ -150,6 +155,18 @@
 		{
 			float: right;
 			display: inline-block;
+		}
+
+		.shiki_infotext_btn_div .shiki_infotext_copy_row
+		{
+			opacity: 0;
+			transition: opacity 0.15s;
+			margin-left: 8px;
+		}
+
+		&:hover .shiki_infotext_btn_div .shiki_infotext_copy_row
+		{
+			opacity: 1;
 		}
 	}
 }
