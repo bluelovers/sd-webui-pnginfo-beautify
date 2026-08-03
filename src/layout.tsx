@@ -108,8 +108,10 @@ export async function addRow(key: string, value: any, infoData: ILayoutInfoData)
 
 	const sx = opts.full ? '_full' : '';
 
+	const copyBtn = `<button class="${CLASS_PREFIX}copy_row" title="Copy value">\u{1F4C4}</button>`;
+
 	let html = `<div class="${CLASS_PREFIX}row">`;
-	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}<div class="${CLASS_PREFIX}btn_div bilingual__trans_ignore_deep">${btns ?? ''}</div></div>`;
+	html += `<div class="${CLASS_PREFIX}label_div ${CLASS_PREFIX}label${sx}" data-key="${escapeHTML(key)}">${key}<div class="${CLASS_PREFIX}btn_div bilingual__trans_ignore_deep">${btns ?? ''}${copyBtn}</div></div>`;
 	html += `<div class="${CLASS_PREFIX}value_div ${CLASS_PREFIX}value${sx} bilingual__trans_ignore_deep" data-syntaxLang="${opts.syntaxLang}">${value}</div>`;
 	html += `</div>`;
 	return html;

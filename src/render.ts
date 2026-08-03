@@ -51,7 +51,11 @@ export async function renderInfo(
 	}
 	else
 	{
-		infotext = elem.innerText;
+		// Read as HTML so we can remove the standalone <b>parameters</b> header
+		const rawHtml = elem.innerHTML;
+		const cleanedHtml = rawHtml.replace(/<b>\s*parameters\s*<\/b>/gi, '');
+		const doc = new DOMParser().parseFromString(cleanedHtml, 'text/html');
+		infotext = (doc.body.innerText || doc.body.textContent || '').trim();
 	}
 
 	infotext = infotext?.replace(/^\s+|\s+$/g, '');
@@ -107,15 +111,51 @@ export async function renderInfo(
 
 		target.addEventListener('click', function (e) {
 			const clickedElement = e.target as HTMLElement;
+			const row = clickedElement.closest(`.${CLASS_PREFIX}row`) as HTMLDivElement | null;
+			if (!row) return;
+
 			if (clickedElement.matches(`.${CLASS_PREFIX}send2prompts`)) {
-				const row = clickedElement.closest(`.${CLASS_PREFIX}row`);
-				if (row) 
-					{
-					const valueElement = row.querySelector(`.${CLASS_PREFIX}value_full, .${CLASS_PREFIX}value`);
-					if (valueElement) {
-						pb_setPromptInput(valueElement.textContent);
-					}
+				const valueElement = row.querySelector(`.${CLASS_PREFIX}value_full, .${CLASS_PREFIX}value`);
+				if (valueElement) {
+					pb_setPromptInput(valueElement.textContent ?? '');
 				}
+				return;
+			}
+
+			if (clickedElement.matches(`.${CLASS_PREFIX}copy_row`)) {
+				const valueElement = row.querySelector(`.${CLASS_PREFIX}value_full, .${CLASS_PREFIX}value`);
+				if (!valueElement) return;
+
+				function getTextExcludingLinks(node: Node): string {
+					let text = '';
+					for (const child of node.childNodes) {
+						if (child.nodeType === Node.TEXT_NODE) {
+							text += child.textContent ?? '';
+						} else if (child.nodeType === Node.ELEMENT_NODE) {
+							const el = child as HTMLElement;
+							if (el.tagName !== 'A') {
+								if (el.tagName === 'DIV') {
+									text += '\n';
+								}
+								text += getTextExcludingLinks(child);
+							}
+						}
+					}
+					return text;
+				}
+
+				let text = getTextExcludingLinks(valueElement);
+				text = text.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+
+				navigator.clipboard.writeText(text).then(() => {
+					(clickedElement as HTMLElement).textContent = '\u2705';
+					setTimeout(() => {
+						(clickedElement as HTMLElement).textContent = '\u{1F4C4}';
+					}, 1000);
+				}).catch((err) => {
+					console.error('Copy failed', err);
+				});
+
 				return;
 			}
 		});
