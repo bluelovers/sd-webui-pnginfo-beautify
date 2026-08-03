@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.0.0 (2026-08-03)
+
+
+
+### 🛠　Build System
+
+* update build ([43a1a98](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/43a1a984904921efff754bb2e13e64e5d00751d9))
+
+
+### 🔖　Miscellaneous
+
+* add "Copy" button to copy each displayed value to clipboard, visible on hover ([bacf22f](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/bacf22f55f7f855a7f881938fe7c7185266e06aa))
+
+
+
 # 1.0.0 (2025-10-09)
 
 
