@@ -6614,7 +6614,8 @@
     disableEscapeHTML: !0
   }));
   [
-    /^ADetailer model \d+\w*$/
+    /^ADetailer model \d+\w*$/,
+    /^Module \d+$/
   ].forEach((key2) => RowConfigMapRegExp.set(key2, {
     decode: simpleSearch,
     disableEscapeHTML: !0

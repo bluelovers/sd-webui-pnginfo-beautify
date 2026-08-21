@@ -129,6 +129,7 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 
 [
 	/^ADetailer model \d+\w*$/,
+	/^Module \d+$/,
 ].forEach(key => RowConfigMapRegExp.set(key, {
 	decode: simpleSearch,
 	disableEscapeHTML: true,

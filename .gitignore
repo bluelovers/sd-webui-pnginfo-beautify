@@ -232,3 +232,5 @@ test/fixtures/.gitkeep
 /src/style.css
 /src/style.css.map
 /output/scripts/
+src/layout.jsx
+src/layout.jsx.map
