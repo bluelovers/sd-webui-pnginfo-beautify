@@ -14,7 +14,7 @@
     "install:resetLockfile": "yarn-tool install --reset-lockfile",
     "build": "tsx ./build.ts",
     "test": "echo test",
-    "ci:install": "pnpm install --frozen-lockfile && pnpm add -W yarn-tool lerna@10 ynpx ts-node ts-jest jest typescript@next @bluelovers/jest-config tsx",
+    "ci:install": "pnpm install --frozen-lockfile && pnpm add yarn-tool lerna@10 ynpx ts-node ts-jest jest typescript@next @bluelovers/jest-config tsx",
     "ci:build": "pnpm run build && pnpm run ci:build:commit && pnpm run postpublish:changelog && pnpm run postpublish:git:commit && pnpm run postpublish:git:push",
     "ci:build:commit": "git add ./output && git commit ./output -m \"build: update build\" & echo ci:build:commit",
     "npm:publish": "echo fake npm publish",
