@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.0.0 (2026-08-21)
+
+
+
+### ⚙️　Continuous Integration
+
+* **workflow:** 移除 build 工作流中的 pnpm 安裝參數 ([c76cd1d](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/c76cd1d52a8f1b227e80d6462f76d4d71806731a))
+
+
+### ♻️　Chores
+
+* **deps:** 移除 ci:install 指令中的 -W 參數 ([5986f7b](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/5986f7b3c7a9080d4650ad77463b260ebd8ad658))
+
+
+
 # 1.0.0 (2026-08-03)
 
 
