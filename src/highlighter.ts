@@ -2,6 +2,7 @@
  * Created by user on 2024/5/17.
  */
 import { createHighlighterCore, HighlighterCore } from 'shiki/core';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 import { prompt } from './grammar';
 import getWasm from 'shiki/wasm';
 import { ThemeInput } from 'shiki';
@@ -35,7 +36,7 @@ export async function initHighlighter(): Promise<HighlighterCore>
 			themeConfig(false),
 			() => themeConfigOther(),
 		],
-		loadWasm: getWasm,
+		engine: await createOnigurumaEngine(getWasm),
 	});
 
 	cacheHighlighter = highlighter;
