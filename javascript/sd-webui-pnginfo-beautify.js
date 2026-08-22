@@ -6770,6 +6770,18 @@
   }
 
   // src/render.ts
+  function copyText(text2) {
+    return navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text2) : new Promise((resolve, reject) => {
+      let textarea = document.createElement("textarea");
+      textarea.value = text2, textarea.setAttribute("readonly", ""), textarea.style.position = "fixed", textarea.style.top = "-9999px", textarea.style.opacity = "0", document.body.appendChild(textarea), textarea.select(), textarea.setSelectionRange(0, text2.length);
+      try {
+        let ok = document.execCommand("copy");
+        document.body.removeChild(textarea), ok ? resolve() : reject(new Error("execCommand copy failed"));
+      } catch (err) {
+        document.body.removeChild(textarea), reject(err);
+      }
+    });
+  }
   async function renderInfo(parentId, isElem, opts) {
     let inputArgv = {
       parentId,
@@ -6846,7 +6858,7 @@
             }, valueElement = row.querySelector(`.${CLASS_PREFIX}value_full, .${CLASS_PREFIX}value`);
             if (!valueElement) return;
             let text2 = getTextExcludingLinks(valueElement);
-            text2 = text2.replace(/[\u200B-\u200D\uFEFF]/g, "").trim(), navigator.clipboard.writeText(text2).then(() => {
+            text2 = text2.replace(/[\u200B-\u200D\uFEFF]/g, "").trim(), copyText(text2).then(() => {
               clickedElement.textContent = "\u2705", setTimeout(() => {
                 clickedElement.textContent = "\u{1F4C4}";
               }, 1e3);
