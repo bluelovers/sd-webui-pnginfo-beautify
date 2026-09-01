@@ -6604,13 +6604,18 @@
     disableEscapeHTML: !0
   }));
   [
-    "Model hash",
     "Model",
-    "VAE hash",
     "VAE",
     "ADetailer model"
   ].forEach((key2) => RowConfigMap.set(key2, {
     decode: simpleSearch,
+    disableEscapeHTML: !0
+  }));
+  [
+    "Model hash",
+    "VAE hash"
+  ].forEach((key2) => RowConfigMap.set(key2, {
+    decode: simpleSearchHash,
     disableEscapeHTML: !0
   }));
   [
@@ -6647,10 +6652,13 @@
   function simpleSearch(value) {
     return `<span>${value}</span> ${_search(value)}`;
   }
+  function simpleSearchHash(value) {
+    return `<span>${value}</span> ${_search(value, "&#x1F50E;", !0)}`;
+  }
   function _search(query, text2 = "&#x1F50E;", is_hash) {
     text2 ??= "&#x1F50E;";
-    let html5 = `<a href="${`https://civitai.com/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
-    return is_hash && (html5 += ` <a href="https://civitai.com/api/v1/model-versions/by-hash/${query}" target="_blank">${text2}</a>`), html5;
+    let html5 = `<a href="${`https://civitai.red/search/models?sortBy=models_v9&query=${query}`}" target="_blank">${text2}</a>`;
+    return is_hash && (html5 += ` <a href="https://civitai.red/api/v1/model-versions/by-hash/${query}" target="_blank">${text2}</a>`), html5;
   }
   function decodeHashs(input) {
     return _decodeHashsCore(parseFromRawInfoGenerator(JSON.parse(input)));
