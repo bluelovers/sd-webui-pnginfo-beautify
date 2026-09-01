@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.0.0 (2026-09-01)
+
+
+
+### 📦　Code Refactoring
+
+* **config:** 優化模型與 VAE hash 的搜尋配置與連結域名 ([ac15d1d](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/ac15d1d2bfe9f26b521e560489405a34a461266a))
+
+
+### 🛠　Build System
+
+* update build ([4018e25](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/4018e2595282fb6addf4e11a252c019be269391a))
+
+
+### ♻️　Chores
+
+* **release:** publish ([d8881b8](https://github.com/bluelovers/sd-webui-pnginfo-beautify/commit/d8881b8186b2613a9bd161a55fbba9685cdc1ada))
+
+
+
 # 1.0.0 (2026-08-22)
 
 
