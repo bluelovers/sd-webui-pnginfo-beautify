@@ -117,13 +117,19 @@ export const RowConfigMapRegExp = new Map<RegExp, IRowConfigOptions>();
 }));
 
 [
-	'Model hash',
 	'Model',
-	'VAE hash',
 	'VAE',
 	'ADetailer model',
 ].forEach(key => RowConfigMap.set(key, {
 	decode: simpleSearch,
+	disableEscapeHTML: true,
+}));
+
+[
+	'Model hash',
+	'VAE hash',
+].forEach(key => RowConfigMap.set(key, {
+	decode: simpleSearchHash,
 	disableEscapeHTML: true,
 }));
 
@@ -168,16 +174,21 @@ function simpleSearch(value: string)
 	return `<span>${value}</span> ${_search(value)}`
 }
 
+function simpleSearchHash(value: string)
+{
+	return `<span>${value}</span> ${_search(value, '&#x1F50E;', true)}`
+}
+
 function _search(query: unknown, text = '&#x1F50E;', is_hash?: boolean)
 {
 	text ??= '&#x1F50E;'
 
-	const href = `https://civitai.com/search/models?sortBy=models_v9&query=${query}`;
+	const href = `https://civitai.red/search/models?sortBy=models_v9&query=${query}`;
 	let html = `<a href="${href}" target="_blank">${text}</a>`;
 
 	if (is_hash)
 	{
-		html += ` <a href="https://civitai.com/api/v1/model-versions/by-hash/${query}" target="_blank">${text}</a>`;
+		html += ` <a href="https://civitai.red/api/v1/model-versions/by-hash/${query}" target="_blank">${text}</a>`;
 	}
 
 	return html
